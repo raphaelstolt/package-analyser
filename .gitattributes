@@ -1,0 +1,14 @@
+# This file was partly modified by the lean package validator (http://git.io/lean-package-validator).
+
+* text=auto eol=lf
+
+.editorconfig export-ignore
+.gitattributes export-ignore
+.github/ export-ignore
+.gitignore export-ignore
+box.json export-ignore
+composer.lock export-ignore
+LICENSE.md export-ignore
+phpunit.xml.dist export-ignore
+README.md export-ignore
+tests/ export-ignore

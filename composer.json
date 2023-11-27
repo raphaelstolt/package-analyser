@@ -1,0 +1,54 @@
+{
+    "name": "stolt/package-analyser",
+    "description": "The PackageAnalyser is a utility tool that analyses a PHP project/micro-package for its structure.",
+    "keywords": ["project", "package", "cli", "dev", "console", "tui"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Raphael Stolt",
+            "email": "raphael.stolt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel-zero/framework": "^10.2",
+        "nunomaduro/termwind": "^1.15.1"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.13",
+        "mockery/mockery": "^1.6",
+        "pestphp/pest": "^2.22",
+        "stolt/lean-package-validator": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "bin": [
+        "bin/package-analyser"
+    ],
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "cs-fix": "./vendor/bin/pint -v",
+        "cs-lint": "./vendor/bin/pint --test"
+    }
+}
