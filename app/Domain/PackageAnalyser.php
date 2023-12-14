@@ -111,31 +111,33 @@ class PackageAnalyser
                     if ($this->isAPhpPackage()) {
                         $this->writeStatus(true);
                         $status = $this->checkCliBinaryDirectoryExistence();
-                        printf('Checking if package is a CLI/TUI %s and placed in a /bin directory', $this->isACliOrTui == true ? '✅' : '❌');
+                        $message = sprintf('Checking if package is a CLI/TUI %s and placed in a /bin directory', $this->isACliOrTui == true ? '✅' : '❌');
+                        $this->output->write($message);
                         if ($this->isACliOrTui) {
                             $this->writeStatus($status);
                         } else {
-                            echo PHP_EOL;
+                            $this->output->writeln('');
                         }
                     } else {
-                        echo ' ❌' . PHP_EOL;
+                        $this->output->writeln(' ❌');
                     }
                     break;
                 case 'cli-phar':
                     if ($this->isAPhpPackage()) {
                         $status = $this->checkPharConfigurationExistence();
-                        printf('Checking if package is a CLI/TUI %s and distributed via PHAR', $this->isACliOrTui == true ? '✅' : '❌');
+                        $message = sprintf('Checking if package is a CLI/TUI %s and distributed via PHAR', $this->isACliOrTui == true ? '✅' : '❌');
+                        $this->output->write($message);
                         if ($this->isACliOrTui) {
                             $this->writeStatus($status);
                         } else {
-                            echo PHP_EOL;
+                            $this->output->writeln('');
                         }
                     }
                     break;
                 case 'composer-scripts':
                     if ($this->isAPhpPackage()) {
                         $status = $this->checkComposerScriptsExistence();
-                        echo 'Checking if Composer scripts are utilised';
+                        $this->output->write('Checking if Composer scripts are utilised');
                         $this->writeStatus($status);
                     }
                     break;
