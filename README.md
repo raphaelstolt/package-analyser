@@ -1,6 +1,6 @@
 # PackageAnalyser
 
-The PackageAnalyser is a utility tool that analyses a 🐘 project/micro-package
+The PackageAnalyser is a utility tool that analyses a 🐘 project/micro-📦
 for its structure, and provides tips on best practices for such one. It's also my first __TUI__ (Terminal User Interface)
 written in [Laravel Zero](https://laravel-zero.com/), so bear with me.
 

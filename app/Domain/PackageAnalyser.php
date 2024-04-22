@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Exceptions\NonExistentPackageDirectory;
+use App\Exceptions\NonExistentStepId;
 use Illuminate\Console\OutputStyle;
 use Symfony\Component\Finder\Finder;
 
@@ -12,6 +13,7 @@ class PackageAnalyser
 {
     private string $directoryToAnalyse;
     private array $steps;
+    private array $stepIds;
     private array $violations;
     private bool $isACliOrTui = false;
     private OutputStyle $output;
@@ -31,24 +33,46 @@ class PackageAnalyser
         $this->output = $output;
 
         $this->steps = [
-            [ 'id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.' ],
-            [ 'id' => 'tests', 'summary' => 'Write tests or specs for the package.' ],
-            [ 'id' => 'ci', 'summary' => 'Use continuous integration.' ],
-            [ 'id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.' ],
-            [ 'id' => 'coding-style', 'summary' => 'Follow a coding style.' ],
-            [ 'id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.' ],
-            [ 'id' => 'license', 'summary' => 'Include a license file in the base directory of the package.' ],
-            [ 'id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.' ],
-            [ 'id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.' ],
-            [ 'id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.' ],
-            [ 'id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory.' ],
-            [ 'id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.' ],
-            [ 'id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.' ],
+            [ 'id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => false ],
+            [ 'id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => false ],
+            [ 'id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => false ],
+            [ 'id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => false ],
+            [ 'id' => 'coding-style', 'summary' => 'Follow a coding style.', 'status' => false ],
+            [ 'id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false ],
+            [ 'id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false ],
+            [ 'id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false ],
+            [ 'id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.', 'status' => false ],
+            [ 'id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false ],
+            [ 'id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory.', 'status' => false ],
+            [ 'id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false ],
+            [ 'id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false ],
+            [ 'id' => 'php-package', 'summary' => 'The given package is written in PHP.', 'status' => false ],
         ];
         $this->violations = [];
+        $this->stepIds = [];
+
+        foreach ($this->steps as $step) {
+            $this->stepIds[] = $step['id'];
+        }
     }
 
-    private function writeStatus(bool $status): void
+    /**
+     * @throws NonExistentStepId
+     */
+    private function alternateStepStatus(string $stepId, bool $status): void
+    {
+        if (!in_array($stepId, $this->stepIds)) {
+            throw new NonExistentStepId('Step id ' . $stepId . 'does not exist.');
+        }
+
+        foreach ($this->steps as $index => $step) {
+            if ($step['id'] === $stepId) {
+                $this->steps[$index]['status'] = $status;
+            }
+        }
+    }
+
+    private function writeStatus(string $stepId, bool $status): void
     {
         if ($status === true) {
             $this->output->writeln(' ✅');
@@ -64,57 +88,68 @@ class PackageAnalyser
                 case 'changelog':
                     $this->output->write('Checking CHANGELOG.md existence');
                     $status = $this->checkChangelogExistence();
-                    $this->writeStatus($status);
+                    $this->writeStatus('changelog', $status);
+                    $this->alternateStepStatus('changelog', $status);
                     break;
                 case 'tests':
                     $status = $this->checkTestsDirectoryExistence() && $this->checkTestingToolExistence();
                     $this->output->write('Checking for tests and testing tools');
-                    $this->writeStatus($status);
+                    $this->writeStatus('tests', $status);
+                    $this->alternateStepStatus('tests', $status);
                     break;
                 case 'ci':
                     $status = $this->checkCiUsage();
                     $this->output->write('Checking for CI usage');
-                    $this->writeStatus($status);
+                    $this->writeStatus('ci', $status);
+                    $this->alternateStepStatus('ci', $status);
                     break;
                 case 'coding-style':
                     $status = $this->checkCodingStyleToolExistence();
                     $this->output->write('Checking for a coding style fixer and linter');
-                    $this->writeStatus($status);
+                    $this->writeStatus('coding-style', $status);
+                    $this->alternateStepStatus('coding-style', $status);
                     break;
                 case 'readme':
                     $status = $this->checkReadmeExistence();
                     $this->output->write('Checking README.md existence');
-                    $this->writeStatus($status);
+                    $this->writeStatus('readme', $status);
+                    $this->alternateStepStatus('readme', $status);
                     break;
                 case 'license':
                     $status = $this->checkLicenseExistence();
                     $this->output->write('Checking LICENSE.md existence');
-                    $this->writeStatus($status);
+                    $this->writeStatus('license', $status);
+                    $this->alternateStepStatus('license', $status);
                     break;
                 case 'gitattributes':
                     $status = $this->checkGitattributesExistence();
                     $this->output->write('Checking .gitattributes existence');
-                    $this->writeStatus($status);
+                    $this->writeStatus('gitattributes', $status);
+                    $this->alternateStepStatus('gitattributes', $status);
                     break;
                 case 'autoloader':
                     $status = $this->checkSrcExistence();
                     $this->output->write('Checking /src or /app existence');
-                    $this->writeStatus($status);
+                    $this->writeStatus('autoloader', $status);
+                    $this->alternateStepStatus('autoloader', $status);
                     break;
                 case 'vcs':
                     $status = $this->checkVcsExistence();
                     $this->output->write('Checking the utilisation of a source code management system like Git');
-                    $this->writeStatus($status);
+                    $this->writeStatus('vcs', $status);
+                    $this->alternateStepStatus('vcs', $status);
                     break;
                 case 'cli-binary':
                     $this->output->write('Checking if package is written in 🐘');
                     if ($this->isAPhpPackage()) {
-                        $this->writeStatus(true);
+                        $this->writeStatus('php-package', true);
+                        $this->alternateStepStatus('php-package', true);
                         $status = $this->checkCliBinaryDirectoryExistence();
                         $message = sprintf('Checking if package is a CLI/TUI %s and placed in a /bin directory', $this->isACliOrTui == true ? '✅' : '❌');
                         $this->output->write($message);
                         if ($this->isACliOrTui) {
-                            $this->writeStatus($status);
+                            $this->writeStatus('cli-binary', $status);
+                            $this->alternateStepStatus('cli-binary', $status);
                         } else {
                             $this->output->writeln('');
                         }
@@ -128,7 +163,8 @@ class PackageAnalyser
                         $message = sprintf('Checking if package is a CLI/TUI %s and distributed via PHAR', $this->isACliOrTui == true ? '✅' : '❌');
                         $this->output->write($message);
                         if ($this->isACliOrTui) {
-                            $this->writeStatus($status);
+                            $this->writeStatus('cli-phar', $status);
+                            $this->alternateStepStatus('cli-phar', $status);
                         } else {
                             $this->output->writeln('');
                         }
@@ -138,7 +174,8 @@ class PackageAnalyser
                     if ($this->isAPhpPackage()) {
                         $status = $this->checkComposerScriptsExistence();
                         $this->output->write('Checking if Composer scripts are utilised');
-                        $this->writeStatus($status);
+                        $this->writeStatus('composer-scripts', $status);
+                        $this->alternateStepStatus('composer-scripts', $status);
                     }
                     break;
             }
@@ -292,6 +329,11 @@ class PackageAnalyser
         $this->violations[] = 'vcs';
 
         return false;
+    }
+
+    public function getDirectoryToAnalyse(): string
+    {
+        return $this->directoryToAnalyse;
     }
 
     private function isAPhpPackage(): bool
