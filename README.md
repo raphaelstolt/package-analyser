@@ -6,7 +6,7 @@ written in [Laravel Zero](https://laravel-zero.com/), so bear with me.
 
 ## Installation
 
-The PackageAnalyser TUI should be installed via should be installed globally through Composer.
+The PackageAnalyser TUI should be installed globally through Composer.
 
 ``` bash
 composer global require stolt/package-analyser
@@ -23,16 +23,15 @@ Run the PackageAnalyser TUI within or against a 🐘 project/micro-package direc
 the given package and provide tips on best practices when required.
 
 ``` bash
-package-analyser analyse [<package-directory>]
+package-analyser analyse [<path-to-package-directory>]
 ```
 
 ### Available options
 
 The `--open-php-package-checklist-link` option will open the PHP Package Checklist (https://phppackagechecklist.com) in
-a Browser with a custom report based on the provided package.
+a browser with a custom report based on the provided package.
 
-The `--write-report` option will write a custom HTML report based on the provided package in the current
-directory.
+The `--write-report` option will write a custom HTML report in the current directory based on the provided package.
 
 ### Running tests
 
