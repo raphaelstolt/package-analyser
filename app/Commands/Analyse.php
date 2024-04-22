@@ -19,7 +19,7 @@ class Analyse extends Command
      */
     protected $signature = 'analyse {package-directory}
     {--open-php-package-checklist-link : Open the report in a browser}
-    {--write-report : Write the report to the filesystem}';
+    {--write-report : Write a HTML report to the filesystem}';
 
     /**
      * The description of the command.
