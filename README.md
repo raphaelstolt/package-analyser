@@ -26,12 +26,9 @@ the given package and provide tips on best practices when required.
 package-analyser analyse [<path-to-package-directory>]
 ```
 
-### Available options
+### Available option
 
-The `--open-php-package-checklist-link` option will open the PHP Package Checklist (https://phppackagechecklist.com) in
-a browser with a custom report based on the provided package.
-
-The `--write-report` option will write a custom HTML report in the current directory based on the provided package.
+The `--write-report` option will write a HTML report in the current directory based on the provided package.
 
 ### Running tests
 
