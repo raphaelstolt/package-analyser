@@ -12,10 +12,15 @@ use Symfony\Component\Finder\Finder;
 class PackageAnalyser
 {
     private string $directoryToAnalyse;
+
     private array $steps;
+
     private array $stepIds;
+
     private array $violations;
+
     private bool $isACliOrTui = false;
+
     private OutputStyle $output;
 
     /**
@@ -25,7 +30,7 @@ class PackageAnalyser
     {
         $this->directoryToAnalyse = $directoryToAnalyse;
 
-        if (!file_exists($directoryToAnalyse)) {
+        if (! file_exists($directoryToAnalyse)) {
             $exceptionMessage = sprintf("Provided package directory '%s' does not exist", $directoryToAnalyse);
             throw new NonExistentPackageDirectory($exceptionMessage);
         }
@@ -33,20 +38,20 @@ class PackageAnalyser
         $this->output = $output;
 
         $this->steps = [
-            [ 'id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => false ],
-            [ 'id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => false ],
-            [ 'id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => false ],
-            [ 'id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => false ],
-            [ 'id' => 'coding-style', 'summary' => 'Follow a coding style.', 'status' => false ],
-            [ 'id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false ],
-            [ 'id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false ],
-            [ 'id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false ],
-            [ 'id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.', 'status' => false ],
-            [ 'id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false ],
-            [ 'id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory.', 'status' => false ],
-            [ 'id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false ],
-            [ 'id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false ],
-            [ 'id' => 'php-package', 'summary' => 'The given package is written in PHP.', 'status' => false ],
+            ['id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => false],
+            ['id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => false],
+            ['id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => false],
+            ['id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => false],
+            ['id' => 'coding-style', 'summary' => 'Follow a coding style.', 'status' => false],
+            ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false],
+            ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false],
+            ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false],
+            ['id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.', 'status' => false],
+            ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false],
+            ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory.', 'status' => false],
+            ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false],
+            ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false],
+            ['id' => 'php-package', 'summary' => 'The given package is written in PHP.', 'status' => false],
         ];
         $this->violations = [];
         $this->stepIds = [];
@@ -61,8 +66,8 @@ class PackageAnalyser
      */
     private function alternateStepStatus(string $stepId, bool $status): void
     {
-        if (!in_array($stepId, $this->stepIds)) {
-            throw new NonExistentStepId('Step id ' . $stepId . 'does not exist.');
+        if (! in_array($stepId, $this->stepIds)) {
+            throw new NonExistentStepId('Step id '.$stepId.'does not exist.');
         }
 
         foreach ($this->steps as $index => $step) {
@@ -206,7 +211,7 @@ class PackageAnalyser
         $testingToolBinaries = [
             './vendor/bin/phpspec',
             './vendor/bin/phpunit',
-            './vendor/bin/pest'
+            './vendor/bin/pest',
         ];
 
         foreach ($testingToolBinaries as $testingToolBinary) {
@@ -260,7 +265,7 @@ class PackageAnalyser
             './vendor/bin/phpcs',
             './vendor/bin/phpcbf',
             './vendor/bin/pint',
-            './vendor/bin/php-cs-fixer'
+            './vendor/bin/php-cs-fixer',
         ];
 
         foreach ($codingStyleToolBinaries as $codingStyleToolBinary) {
@@ -328,7 +333,7 @@ class PackageAnalyser
             return false;
         }
 
-        exec('cd ' . realpath($this->getDirectoryToAnalyse()) . ' && git tag --list', $tags);
+        exec('cd '.realpath($this->getDirectoryToAnalyse()).' && git tag --list', $tags);
 
         if (count($tags) === 0) {
             return false;
@@ -373,7 +378,7 @@ class PackageAnalyser
     private function checkCliBinaryDirectoryExistence(): bool
     {
         if ($this->isAPhpPackage()) {
-            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse . DIRECTORY_SEPARATOR . 'composer.json'), true);
+            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
 
             if (isset($composerJson['keywords'])) {
                 $matchingKeywords = array_filter($composerJson['keywords'], fn ($keyword) => in_array($keyword, ['cli', 'tui', 'console']));
@@ -402,7 +407,7 @@ class PackageAnalyser
     private function checkPharConfigurationExistence(): bool
     {
         if ($this->isAPhpPackage()) {
-            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse . DIRECTORY_SEPARATOR . 'composer.json'), true);
+            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
 
             if (isset($composerJson['keywords'])) {
                 $matchingKeywords = array_filter($composerJson['keywords'], fn ($keyword) => in_array($keyword, ['cli', 'tui', 'console']));
@@ -434,7 +439,7 @@ class PackageAnalyser
             $composerJson = json_decode(file_get_contents('composer.json'), true);
 
             if (isset($composerJson['scripts'])) {
-               return count($composerJson['scripts']) > 0;
+                return count($composerJson['scripts']) > 0;
             }
 
             return false;

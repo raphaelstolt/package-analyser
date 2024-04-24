@@ -29,17 +29,18 @@ class ReportWriter
                 $statusEmoji = '⛔';
             }
 
-            $tbodyContent .= '<tr class="' . $trClass . '">
-        <th scope="row">' . $index + 1 . '</th>
-        <td>' . $analyseStep['summary'] . '</td>
-        <td>' . $statusEmoji . '</td>
-      </tr>' . PHP_EOL;
+            $tbodyContent .= '<tr class="'.$trClass.'">
+        <th scope="row">'.$index + 1 .'</th>
+        <td>'.$analyseStep['summary'].'</td>
+        <td>'.$statusEmoji.'</td>
+      </tr>'.PHP_EOL;
         }
 
         file_put_contents(
-            $outputDirectory . DIRECTORY_SEPARATOR . 'pa-report.html',
+            $outputDirectory.DIRECTORY_SEPARATOR.'pa-report.html',
             str_replace(['{{ directory }}', '{{ tbody }}'], [realpath($this->directoryAnalysed), $tbodyContent], $reportTemplateContent)
         );
+
         return true;
     }
 }

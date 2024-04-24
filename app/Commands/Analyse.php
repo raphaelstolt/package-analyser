@@ -30,8 +30,6 @@ class Analyse extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -39,20 +37,20 @@ class Analyse extends Command
         $packageDirectory = $this->argument('package-directory');
 
         $this->packageAnalyser = new PackageAnalyser($packageDirectory, $this->getOutput());
-        $this->getOutput()->writeln('Analysing 📦 in directory <info>' . realpath($packageDirectory) . '</info>');
+        $this->getOutput()->writeln('Analysing 📦 in directory <info>'.realpath($packageDirectory).'</info>');
 
         $amountOfAnalysisSteps = $this->packageAnalyser->analyse();
 
-        $this->getOutput()->writeln('Ran <info>' . $amountOfAnalysisSteps . '</info> analysis steps');
+        $this->getOutput()->writeln('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps');
 
         if (count($this->packageAnalyser->getViolations()) > 0) {
             if (count($this->packageAnalyser->getViolations()) === 1) {
                 $this->getOutput()->writeln(
-                    'Found <info>' . count($this->packageAnalyser->getViolations()) . '</info> optimiseable aspect'
+                    'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspect'
                 );
             } else {
                 $this->getOutput()->writeln(
-                    'Found <info>' . count($this->packageAnalyser->getViolations()) . '</info> optimiseable aspects'
+                    'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspects'
                 );
             }
         }
@@ -62,7 +60,7 @@ class Analyse extends Command
         if ($writeReportOption) {
             $reportWriter = new ReportWriter($this->packageAnalyser);
             $reportWriter->write($workingDirectory);
-            $this->getOutput()->writeln('Writing package analysis report to <info>' . $workingDirectory . '</info>');
+            $this->getOutput()->writeln('Writing package analysis report to <info>'.$workingDirectory.'</info>');
         }
 
         return self::SUCCESS;
