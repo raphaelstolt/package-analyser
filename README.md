@@ -9,7 +9,7 @@ written in [Laravel Zero](https://laravel-zero.com/), so bear with me.
 The PackageAnalyser TUI should be installed globally through Composer.
 
 ``` bash
-composer global require stolt/package-analyser
+composer global require --dev stolt/package-analyser
 ```
 
 Make sure that the path to your global vendor binaries directory is in your `$PATH`.
