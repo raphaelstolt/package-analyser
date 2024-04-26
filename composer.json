@@ -18,7 +18,8 @@
     "require-dev": {
         "laravel/pint": "^1.15",
         "mockery/mockery": "^1.6",
-        "pestphp/pest": "^2.22"
+        "pestphp/pest": "^2.22",
+        "stolt/lean-package-validator": "^4.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -46,6 +47,7 @@
     "scripts": {
         "test": "./vendor/bin/pest",
         "cs-fix": "./vendor/bin/pint -v",
-        "cs-lint": "./vendor/bin/pint --test"
+        "cs-lint": "./vendor/bin/pint --test",
+        "validate-gitattributes": "lean-package-validator validate"
     }
 }

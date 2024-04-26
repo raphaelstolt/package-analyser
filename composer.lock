@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5625d52d857b99d81b26c0845a9f6d86",
+    "content-hash": "a319cbe8ba860c512833546ff5445f2f",
     "packages": [
         {
             "name": "brick/math",
@@ -5385,6 +5385,65 @@
             "time": "2024-03-08T09:58:59+00:00"
         },
         {
+            "name": "laminas/laminas-stdlib",
+            "version": "3.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-stdlib.git",
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/6a192dd0882b514e45506f533b833b623b78fff3",
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
+            },
+            "conflict": {
+                "zendframework/zend-stdlib": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-coding-standard": "^2.5",
+                "phpbench/phpbench": "^1.2.15",
+                "phpunit/phpunit": "^10.5.8",
+                "psalm/plugin-phpunit": "^0.18.4",
+                "vimeo/psalm": "^5.20.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Stdlib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "laminas",
+                "stdlib"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-stdlib/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-stdlib/issues",
+                "rss": "https://github.com/laminas/laminas-stdlib/releases.atom",
+                "source": "https://github.com/laminas/laminas-stdlib"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2024-01-19T12:39:49+00:00"
+        },
+        {
             "name": "laravel/pint",
             "version": "v1.15.2",
             "source": {
@@ -7576,6 +7635,77 @@
                 }
             ],
             "time": "2023-02-07T11:34:05+00:00"
+        },
+        {
+            "name": "stolt/lean-package-validator",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/raphaelstolt/lean-package-validator.git",
+                "reference": "38c0000d15fea3955498397ea1cb8d34ddf7b904"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/raphaelstolt/lean-package-validator/zipball/38c0000d15fea3955498397ea1cb8d34ddf7b904",
+                "reference": "38c0000d15fea3955498397ea1cb8d34ddf7b904",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-stdlib": "^3.7",
+                "php": ">=8.1",
+                "sebastian/diff": "^5.0||^4.0.3",
+                "symfony/console": "^7.0.6||^v5.4.8"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "mockery/mockery": "^1.0",
+                "phlak/semver": "^4.1",
+                "php-mock/php-mock-phpunit": "^2.7||^1.1",
+                "phpstan/phpstan": "^1.6.2",
+                "phpunit/phpunit": "^10.3||^9.6.13"
+            },
+            "bin": [
+                "bin/lean-package-validator"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stolt\\LeanPackage\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Raphael Stolt",
+                    "email": "raphael.stolt@gmail.com"
+                }
+            ],
+            "description": "Library and CLI for validating if a project or package has and will have lean releases.",
+            "keywords": [
+                "cli",
+                "dev",
+                "dist",
+                "gitattributes",
+                "lean",
+                "package",
+                "project",
+                "release",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/raphaelstolt/lean-package-validator/issues",
+                "source": "https://github.com/raphaelstolt/lean-package-validator/tree/v4.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/raphaelstolt",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-04-26T11:45:12+00:00"
         },
         {
             "name": "ta-tikoma/phpunit-architecture-test",
