@@ -1,6 +1,6 @@
 {
     "name": "stolt/package-analyser",
-    "description": "The PackageAnalyser is a utility tool that analyses a PHP project/micro-package for its structure.",
+    "description": "The package analyser is a utility tool that analyses a PHP project/micro-package for its structure.",
     "keywords": ["project", "package", "cli", "dev", "console", "tui"],
     "type": "library",
     "license": "MIT",

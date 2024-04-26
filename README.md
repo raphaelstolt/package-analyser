@@ -1,12 +1,12 @@
-# PackageAnalyser
+# Package analyser
 
-The PackageAnalyser is a utility tool that analyses a 🐘 project/micro-📦
+The package analyser is a utility tool that analyses a 🐘 project/micro-📦
 for its structure, and provides tips on best practices for such one. It's also my first __TUI__ (Terminal User Interface)
 written in [Laravel Zero](https://laravel-zero.com/), so bear with me.
 
 ## Installation
 
-The PackageAnalyser TUI should be installed globally through Composer.
+The package analyser TUI should be installed globally through Composer.
 
 ``` bash
 composer global require --dev stolt/package-analyser
@@ -19,7 +19,7 @@ executable can be located.
 
 ## Usage
 
-Run the PackageAnalyser TUI within or against a 🐘 project/micro-package directory, and it will analyse
+Run the package analyser TUI within or against a 🐘 project/micro-package directory, and it will analyse
 the given package and provide tips on best practices when required.
 
 ``` bash

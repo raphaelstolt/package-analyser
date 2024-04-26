@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
+use App\Commands\Analyse;
+
 class ReportWriter
 {
     private array $analyseSteps;
@@ -38,7 +40,11 @@ class ReportWriter
 
         file_put_contents(
             $outputDirectory.DIRECTORY_SEPARATOR.'pa-report.html',
-            str_replace(['{{ directory }}', '{{ tbody }}'], [realpath($this->directoryAnalysed), $tbodyContent], $reportTemplateContent)
+            str_replace(
+                ['{{ directory }}', '{{ tbody }}', '{{ pa_version }}'],
+                [realpath($this->directoryAnalysed), $tbodyContent, Analyse::VERSION],
+                $reportTemplateContent
+            )
         );
 
         return true;

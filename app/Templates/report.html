@@ -10,7 +10,7 @@
           crossorigin="anonymous">
 </head>
 <body>
-<h4>Report for 📦 in {{ directory }}</h4>
+<h4 class="text-center">Report for 📦 in directory <em>{{ directory }}</em></h4>
 <table class="table">
     <thead>
     <tr>
@@ -23,5 +23,7 @@
       {{ tbody }}
     </tbody>
 </table>
+<footer class="text-center">Produced by the <a href="https://github.com/raphaelstolt/package-analyser"
+                                                         target="_blank">package analyser</a> {{ pa_version }}</footer>
 </body>
 </html>

@@ -31,7 +31,7 @@ class PackageAnalyser
         $this->directoryToAnalyse = $directoryToAnalyse;
 
         if (! file_exists($directoryToAnalyse)) {
-            $exceptionMessage = sprintf("Provided package directory '%s' does not exist", $directoryToAnalyse);
+            $exceptionMessage = sprintf("Provided package directory '%s' does not exist.", $directoryToAnalyse);
             throw new NonExistentPackageDirectory($exceptionMessage);
         }
 
@@ -48,7 +48,7 @@ class PackageAnalyser
             ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false],
             ['id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.', 'status' => false],
             ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false],
-            ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory.', 'status' => false],
+            ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory in the base directory of the package.', 'status' => false],
             ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false],
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false],
             ['id' => 'php-package', 'summary' => 'The given package is written in PHP.', 'status' => false],

@@ -6,10 +6,13 @@ namespace App\Commands;
 
 use App\Domain\PackageAnalyser;
 use App\Domain\ReportWriter;
+use App\Exceptions\NonExistentPackageDirectory;
 use LaravelZero\Framework\Commands\Command;
 
 class Analyse extends Command
 {
+    public const VERSION = '1.0.0';
+
     private PackageAnalyser $packageAnalyser;
 
     /**
@@ -36,10 +39,15 @@ class Analyse extends Command
         $workingDirectory = getcwd();
         $packageDirectory = $this->argument('package-directory');
 
-        $this->packageAnalyser = new PackageAnalyser($packageDirectory, $this->getOutput());
-        $this->getOutput()->writeln('Analysing 📦 in directory <info>'.realpath($packageDirectory).'</info>');
+        try {
+            $this->packageAnalyser = new PackageAnalyser($packageDirectory, $this->getOutput());
+            $this->getOutput()->writeln('Analysing 📦 in directory <info>'.realpath($packageDirectory).'</info>');
+            $amountOfAnalysisSteps = $this->packageAnalyser->analyse();
+        } catch (NonExistentPackageDirectory $e) {
+            $this->getOutput()->writeln($e->getMessage());
 
-        $amountOfAnalysisSteps = $this->packageAnalyser->analyse();
+            return self::FAILURE;
+        }
 
         $this->getOutput()->writeln('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps');
 

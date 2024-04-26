@@ -18,12 +18,12 @@ abstract class TestCase extends BaseTestCase
     protected function setUpTemporaryDirectory()
     {
         if ((new OsHelper())->isWindows() === false) {
-            \ini_set('sys_temp_dir', '/tmp/lpv');
-            $this->temporaryDirectory = '/tmp/lpv';
+            \ini_set('sys_temp_dir', '/tmp/pa');
+            $this->temporaryDirectory = '/tmp/pa';
         } else {
             $this->temporaryDirectory = \sys_get_temp_dir()
                 .DIRECTORY_SEPARATOR
-                .'lpv';
+                .'pa';
         }
 
         if (! \file_exists($this->temporaryDirectory)) {
