@@ -11,7 +11,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class Analyse extends Command
 {
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
 
     private PackageAnalyser $packageAnalyser;
 
