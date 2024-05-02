@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
+use App\Enum\ViolationStatus;
 use App\Exceptions\NonExistentPackageDirectory;
 use App\Exceptions\NonExistentStepId;
 use Illuminate\Console\OutputStyle;
@@ -34,22 +35,22 @@ class PackageAnalyser
         }
 
         $this->steps = [
-            ['id' => 'php-package', 'summary' => 'The given package is written in 🐘.', 'status' => false],
-            ['id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => false],
-            ['id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => false],
-            ['id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => false],
-            ['id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => false],
-            ['id' => 'coding-style', 'summary' => 'Enforce a coding style.', 'status' => false],
-            ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false],
-            ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false],
-            ['id' => 'gitignore', 'summary' => 'Keep a .gitignore file in the base directory of the package to keep unwanted files unversioned.', 'status' => false],
-            ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false],
-            ['id' => 'autoloader', 'summary' => 'Place domain code in a /src or app/ directory in the base directory of the package.', 'status' => false],
-            ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false],
-            ['id' => 'cli', 'summary' => 'The given package is a CLI/TUI.', 'status' => false],
-            ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory in the base directory of the package.', 'status' => false],
-            ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false],
-            ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false],
+            ['id' => 'php-package', 'summary' => 'The given package is written in 🐘.', 'status' => ViolationStatus::False],
+            ['id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => ViolationStatus::False],
+            ['id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => ViolationStatus::False],
+            ['id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => ViolationStatus::False],
+            ['id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => ViolationStatus::False],
+            ['id' => 'coding-style', 'summary' => 'Enforce a coding style.', 'status' => ViolationStatus::False],
+            ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => ViolationStatus::False],
+            ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => ViolationStatus::False],
+            ['id' => 'gitignore', 'summary' => 'Keep a .gitignore file in the base directory of the package to keep unwanted files unversioned.', 'status' => ViolationStatus::False],
+            ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => ViolationStatus::False],
+            ['id' => 'autoloader', 'summary' => 'Place domain code in a /src or app/ directory in the base directory of the package.', 'status' => ViolationStatus::False],
+            ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => ViolationStatus::False],
+            ['id' => 'cli', 'summary' => 'The given package is a CLI/TUI.', 'status' => ViolationStatus::Irrelevant],
+            ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory in the base directory of the package.', 'status' => ViolationStatus::Irrelevant],
+            ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => ViolationStatus::Irrelevant],
+            ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => ViolationStatus::False],
         ];
         $this->stepIds = [];
 
@@ -61,7 +62,7 @@ class PackageAnalyser
     /**
      * @throws NonExistentStepId
      */
-    private function alternateStepStatus(string $stepId, bool $status): void
+    private function alternateStepStatus(string $stepId, ViolationStatus $status): void
     {
         if (! in_array($stepId, $this->stepIds)) {
             throw new NonExistentStepId('Step id '.$stepId.'does not exist.');
@@ -89,7 +90,11 @@ class PackageAnalyser
                     break;
                 case 'tests':
                     $status = $this->checkTestsDirectoryExistence() && $this->checkTestingToolExistence();
-                    $this->alternateStepStatus('tests', $status);
+                    if ($status === true) {
+                        $this->alternateStepStatus('tests', ViolationStatus::True);
+                    } else {
+                        $this->alternateStepStatus('tests', ViolationStatus::False);
+                    }
                     break;
                 case 'ci':
                     $this->alternateStepStatus('ci', $this->checkCiUsage());
@@ -133,17 +138,17 @@ class PackageAnalyser
         return count($this->steps);
     }
 
-    private function checkTestsDirectoryExistence(): bool
+    private function checkTestsDirectoryExistence(): ViolationStatus
     {
         $finder = new Finder();
         if ($finder->depth(0)->directories()->name(['test*', 'spec*'])->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkTestingToolExistence(): bool
+    private function checkTestingToolExistence(): ViolationStatus
     {
         $testingToolBinaries = [
             './vendor/bin/phpspec',
@@ -153,44 +158,44 @@ class PackageAnalyser
 
         foreach ($testingToolBinaries as $testingToolBinary) {
             if (file_exists($testingToolBinary)) {
-                return true;
+                return ViolationStatus::True;
             }
         }
 
-        return false;
+        return ViolationStatus::True;
     }
 
-    private function checkChangelogExistence(): bool
+    private function checkChangelogExistence(): ViolationStatus
     {
         $finder = new Finder();
         if ($finder->depth(0)->files()->name('CHANGELOG*')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkReadmeExistence(): bool
+    private function checkReadmeExistence(): ViolationStatus
     {
         $finder = new Finder();
         if ($finder->depth(0)->files()->name('README*')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkLicenseExistence(): bool
+    private function checkLicenseExistence(): ViolationStatus
     {
         $finder = new Finder();
         if ($finder->depth(0)->files()->name('LICENSE*')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkCodingStyleToolExistence(): bool
+    private function checkCodingStyleToolExistence(): ViolationStatus
     {
         $codingStyleToolBinaries = [
             './vendor/bin/phpcs',
@@ -201,77 +206,77 @@ class PackageAnalyser
 
         foreach ($codingStyleToolBinaries as $codingStyleToolBinary) {
             if (file_exists($codingStyleToolBinary)) {
-                return true;
+                return ViolationStatus::True;
             }
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkCiUsage(): bool
+    private function checkCiUsage(): ViolationStatus
     {
         $finder = new Finder();
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(1)->path('.github/workflows')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
         $finder = new Finder();
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitlab-ci*')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkGitattributesExistence(): bool
+    private function checkGitattributesExistence(): ViolationStatus
     {
         $finder = new Finder();
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitattributes')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkGitignoreExistence(): bool
+    private function checkGitignoreExistence(): ViolationStatus
     {
         $finder = new Finder();
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitignore')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkSrcOrAppExistence(): bool
+    private function checkSrcOrAppExistence(): ViolationStatus
     {
         $finder = new Finder();
 
         if ($finder->depth(0)->path(['app', 'src'])->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
-    private function checkSemanticVersioningUsage(): bool
+    private function checkSemanticVersioningUsage(): ViolationStatus
     {
         if ($this->checkVcsExistence() === false) {
-            return false;
+            return ViolationStatus::False;
         }
 
         exec('cd '.realpath($this->getDirectoryToAnalyse()).' && git tag --list', $tags);
 
         if (count($tags) === 0) {
-            return false;
+            return ViolationStatus::False;
         }
 
         $usesSemanticVersioning = false;
@@ -282,20 +287,24 @@ class PackageAnalyser
             }
         }
 
-        return $usesSemanticVersioning;
+        if ($usesSemanticVersioning === true) {
+            return ViolationStatus::True;
+        }
+
+        return ViolationStatus::False;
     }
 
-    private function checkVcsExistence(): bool
+    private function checkVcsExistence(): ViolationStatus
     {
         $finder = new Finder();
         $finder->ignoreDotFiles(false);
         $finder->ignoreVCS(false);
 
         if ($finder->depth(0)->path('.git')->in($this->directoryToAnalyse)->hasResults()) {
-            return true;
+            return ViolationStatus::True;
         }
 
-        return false;
+        return ViolationStatus::False;
     }
 
     public function getDirectoryToAnalyse(): string
@@ -303,12 +312,19 @@ class PackageAnalyser
         return $this->directoryToAnalyse;
     }
 
-    private function isAPhpPackage(): bool
+    private function isAPhpPackage(): ViolationStatus
     {
-        return file_exists('composer.json');
+        if (file_exists('composer.json')) {
+            return ViolationStatus::True;
+        }
+
+        return ViolationStatus::False;
     }
 
-    private function checkCliBinaryDirectoryExistence(): bool
+    /**
+     * @throws NonExistentStepId
+     */
+    private function checkCliBinaryDirectoryExistence(): ViolationStatus
     {
         if ($this->isAPhpPackage()) {
             $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
@@ -318,29 +334,29 @@ class PackageAnalyser
 
                 if (count($matchingKeywords) > 0) {
                     $this->isACliOrTui = true;
-                    $this->alternateStepStatus('cli', true);
+                    $this->alternateStepStatus('cli', ViolationStatus::True);
                 }
 
                 if ($this->isACliOrTui) {
                     $finder = new Finder();
 
                     if ($finder->depth(1)->path('bin')->in($this->directoryToAnalyse)->hasResults()) {
-                        $this->alternateStepStatus('cli-binary', true);
+                        $this->alternateStepStatus('cli-binary', ViolationStatus::True);
 
-                        return true;
+                        return ViolationStatus::True;
                     }
 
-                    $this->alternateStepStatus('cli-binary', false);
+                    $this->alternateStepStatus('cli-binary', ViolationStatus::True);
 
-                    return false;
+                    return ViolationStatus::False;
                 }
             }
 
-            return false;
+            return ViolationStatus::Irrelevant;
         }
     }
 
-    private function checkPharConfigurationExistence(): bool
+    private function checkPharConfigurationExistence(): ViolationStatus
     {
         if ($this->isAPhpPackage()) {
             $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
@@ -356,27 +372,29 @@ class PackageAnalyser
                     $finder = new Finder();
 
                     if ($finder->depth(0)->files()->name('box.json*')->in($this->directoryToAnalyse)->hasResults()) {
-                        return true;
+                        return ViolationStatus::True;
                     }
 
-                    return false;
+                    return ViolationStatus::True;
                 }
             }
 
-            return false;
+            return ViolationStatus::Irrelevant;
         }
     }
 
-    private function checkComposerScriptsExistence(): bool
+    private function checkComposerScriptsExistence(): ViolationStatus
     {
         if ($this->isAPhpPackage()) {
             $composerJson = json_decode(file_get_contents('composer.json'), true);
 
             if (isset($composerJson['scripts'])) {
-                return count($composerJson['scripts']) > 0;
+                if (count($composerJson['scripts']) > 0) {
+                    return ViolationStatus::True;
+                }
             }
 
-            return false;
+            return ViolationStatus::False;
         }
     }
 
@@ -387,7 +405,7 @@ class PackageAnalyser
 
     public function getViolations(): array
     {
-        return array_filter($this->steps, fn ($step) => $step['status'] === false);
+        return array_filter($this->steps, fn ($step) => $step['status'] === ViolationStatus::False);
     }
 
     public function getStepsForTable(): array
@@ -397,10 +415,13 @@ class PackageAnalyser
 
         foreach ($this->steps as $step) {
             $status = ' ⛔';
-            if ($step['status'] === true) {
+            if ($step['status'] === ViolationStatus::True) {
                 $status = ' ✅';
             }
-            $steps[] = [$step['id'] => $index, $step['summary'] => $step['summary'], $step['status'] => $status];
+            if ($step['status'] === ViolationStatus::Irrelevant) {
+                $status = ' 🔕';
+            }
+            $steps[] = ['id' => $index, 'summary' => $step['summary'], 'status' => $status];
             $index++;
         }
 

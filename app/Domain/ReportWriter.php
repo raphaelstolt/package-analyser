@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Commands\Analyse;
+use App\Enum\ViolationStatus;
 
 class ReportWriter
 {
     private array $analyseSteps;
 
-    private $directoryAnalysed;
+    private string $directoryAnalysed;
 
-    public function __construct(PackageAnalyser $analyser)
+    private string $outputDirectory;
+
+    public function __construct(PackageAnalyser $analyser, string $outputDirectory)
     {
         $this->analyseSteps = $analyser->getSteps();
         $this->directoryAnalysed = $analyser->getDirectoryToAnalyse();
+        $this->outputDirectory = $outputDirectory;
     }
 
-    public function write(string $outputDirectory): bool
+    public function write(): bool
     {
         $reportTemplateContent = file_get_contents(realpath('app/Templates/report.html'));
 
@@ -26,9 +30,14 @@ class ReportWriter
         foreach ($this->analyseSteps as $index => $analyseStep) {
             $trClass = 'table-success';
             $statusEmoji = '✅';
-            if ($analyseStep['status'] === false) {
+            if ($analyseStep['status'] === ViolationStatus::False) {
                 $trClass = 'table-danger';
                 $statusEmoji = '⛔';
+            }
+
+            if ($analyseStep['status'] === ViolationStatus::Irrelevant) {
+                $trClass = 'table-secondary';
+                $statusEmoji = '🔕';
             }
 
             $tbodyContent .= '<tr class="'.$trClass.'">
@@ -39,7 +48,7 @@ class ReportWriter
         }
 
         file_put_contents(
-            $outputDirectory.DIRECTORY_SEPARATOR.'pa-report.html',
+            $this->outputDirectory.DIRECTORY_SEPARATOR.'pa-report.html',
             str_replace(
                 ['{{ directory }}', '{{ tbody }}', '{{ pa_version }}'],
                 [realpath($this->directoryAnalysed), $tbodyContent, Analyse::VERSION],

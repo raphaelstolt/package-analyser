@@ -74,6 +74,7 @@ class Analyse extends Command
                 $this->packageAnalyser->getStepsForTable()[12],
                 $this->packageAnalyser->getStepsForTable()[13],
                 $this->packageAnalyser->getStepsForTable()[14],
+                $this->packageAnalyser->getStepsForTable()[15],
                 new TableSeparator(),
                 [new TableCell('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps. '.$violationText, ['colspan' => 3])],
             ]);
@@ -88,8 +89,8 @@ class Analyse extends Command
         $writeReportOption = $this->option('write-report');
 
         if ($writeReportOption) {
-            $reportWriter = new ReportWriter($this->packageAnalyser);
-            $reportWriter->write($workingDirectory);
+            $reportWriter = new ReportWriter($this->packageAnalyser, $workingDirectory);
+            $reportWriter->write();
             $this->getOutput()->writeln('Writing package analysis report to <info>'.$workingDirectory.'</info>');
         }
 

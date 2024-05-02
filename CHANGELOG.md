@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Add `.gitignore` existence check.
+- Improve violations handling and reporting.
 
 ## [v1.0.2] - 2024-05-02
 
