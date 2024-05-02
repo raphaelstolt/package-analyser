@@ -21,7 +21,6 @@ class Analyse extends Command
      * @var string
      */
     protected $signature = 'analyse {package-directory}
-    {--open-php-package-checklist-link : Open the report in a browser}
     {--write-report : Write a HTML report to the filesystem}';
 
     /**
