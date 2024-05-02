@@ -24,7 +24,8 @@ class Analyse extends Command
      * @var string
      */
     protected $signature = 'analyse {package-directory}
-    {--write-report : Write a HTML report to the filesystem}';
+    {--write-report : Write a HTML report to the filesystem}
+    {--violations-threshold=0 : Threshold of allowed violations}';
 
     /**
      * The description of the command.
@@ -40,6 +41,7 @@ class Analyse extends Command
     {
         $workingDirectory = getcwd();
         $packageDirectory = $this->argument('package-directory');
+        $violationsThresholdOption = $this->option('violations-threshold');
         $violationText = '';
 
         try {
@@ -89,6 +91,10 @@ class Analyse extends Command
             $reportWriter = new ReportWriter($this->packageAnalyser);
             $reportWriter->write($workingDirectory);
             $this->getOutput()->writeln('Writing package analysis report to <info>'.$workingDirectory.'</info>');
+        }
+
+        if (count($this->packageAnalyser->getViolations()) > $violationsThresholdOption) {
+            return self::FAILURE;
         }
 
         return self::SUCCESS;

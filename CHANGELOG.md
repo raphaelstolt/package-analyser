@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.2] - 2024-05-02
+
+### Added
+
+- Add `--violations-threshold` option, which defaults to 0.
+- Utilise `Symfony\Component\Console\Helper\Table` for TUI output.
+
 ## [v1.0.1] - 2024-05-02
 
 ### Removed
