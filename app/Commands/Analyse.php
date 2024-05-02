@@ -8,6 +8,9 @@ use App\Domain\PackageAnalyser;
 use App\Domain\ReportWriter;
 use App\Exceptions\NonExistentPackageDirectory;
 use LaravelZero\Framework\Commands\Command;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 
 class Analyse extends Command
 {
@@ -37,29 +40,47 @@ class Analyse extends Command
     {
         $workingDirectory = getcwd();
         $packageDirectory = $this->argument('package-directory');
+        $violationText = '';
 
         try {
-            $this->packageAnalyser = new PackageAnalyser($packageDirectory, $this->getOutput());
+            $this->packageAnalyser = new PackageAnalyser($packageDirectory);
             $this->getOutput()->writeln('Analysing 📦 in directory <info>'.realpath($packageDirectory).'</info>');
             $amountOfAnalysisSteps = $this->packageAnalyser->analyse();
+
+            if (count($this->packageAnalyser->getViolations()) > 0) {
+                $violationText = 'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspect.';
+                if (count($this->packageAnalyser->getViolations()) > 1) {
+                    $violationText = 'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspects.';
+                }
+            }
+
+            $table = new Table($this->getOutput());
+            $table->setHeaders(['#', 'Analyse step', 'Status']);
+            $table->setRows([
+                $this->packageAnalyser->getStepsForTable()[0],
+                $this->packageAnalyser->getStepsForTable()[1],
+                $this->packageAnalyser->getStepsForTable()[2],
+                $this->packageAnalyser->getStepsForTable()[3],
+                $this->packageAnalyser->getStepsForTable()[4],
+                $this->packageAnalyser->getStepsForTable()[5],
+                $this->packageAnalyser->getStepsForTable()[6],
+                $this->packageAnalyser->getStepsForTable()[7],
+                $this->packageAnalyser->getStepsForTable()[8],
+                $this->packageAnalyser->getStepsForTable()[9],
+                $this->packageAnalyser->getStepsForTable()[10],
+                $this->packageAnalyser->getStepsForTable()[11],
+                $this->packageAnalyser->getStepsForTable()[12],
+                $this->packageAnalyser->getStepsForTable()[13],
+                $this->packageAnalyser->getStepsForTable()[14],
+                new TableSeparator(),
+                [new TableCell('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps. '.$violationText, ['colspan' => 3])],
+            ]);
+
+            $table->render();
         } catch (NonExistentPackageDirectory $e) {
             $this->getOutput()->writeln($e->getMessage());
 
             return self::FAILURE;
-        }
-
-        $this->getOutput()->writeln('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps');
-
-        if (count($this->packageAnalyser->getViolations()) > 0) {
-            if (count($this->packageAnalyser->getViolations()) === 1) {
-                $this->getOutput()->writeln(
-                    'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspect'
-                );
-            } else {
-                $this->getOutput()->writeln(
-                    'Found <info>'.count($this->packageAnalyser->getViolations()).'</info> optimiseable aspects'
-                );
-            }
         }
 
         $writeReportOption = $this->option('write-report');

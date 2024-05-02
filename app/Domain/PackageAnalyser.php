@@ -17,8 +17,6 @@ class PackageAnalyser
 
     private array $stepIds;
 
-    private array $violations;
-
     private bool $isACliOrTui = false;
 
     private OutputStyle $output;
@@ -26,7 +24,7 @@ class PackageAnalyser
     /**
      * @throws NonExistentPackageDirectory
      */
-    public function __construct(string $directoryToAnalyse, OutputStyle $output)
+    public function __construct(string $directoryToAnalyse)
     {
         $this->directoryToAnalyse = $directoryToAnalyse;
 
@@ -35,25 +33,23 @@ class PackageAnalyser
             throw new NonExistentPackageDirectory($exceptionMessage);
         }
 
-        $this->output = $output;
-
         $this->steps = [
+            ['id' => 'php-package', 'summary' => 'The given package is written in 🐘.', 'status' => false],
             ['id' => 'changelog', 'summary' => 'Keep a CHANGELOG.md file in the base directory of the package.', 'status' => false],
             ['id' => 'tests', 'summary' => 'Write tests or specs for the package.', 'status' => false],
             ['id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => false],
             ['id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => false],
-            ['id' => 'coding-style', 'summary' => 'Follow a coding style.', 'status' => false],
+            ['id' => 'coding-style', 'summary' => 'Enforce a coding style.', 'status' => false],
             ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false],
             ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false],
             ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false],
-            ['id' => 'autoloader', 'summary' => 'Place domain code in a /src directory in the base directory of the package.', 'status' => false],
+            ['id' => 'autoloader', 'summary' => 'Place domain code in a /src or app/ directory in the base directory of the package.', 'status' => false],
             ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false],
+            ['id' => 'cli', 'summary' => 'The given package is a CLI/TUI.', 'status' => false],
             ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory in the base directory of the package.', 'status' => false],
             ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => false],
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => false],
-            ['id' => 'php-package', 'summary' => 'The given package is written in PHP.', 'status' => false],
         ];
-        $this->violations = [];
         $this->stepIds = [];
 
         foreach ($this->steps as $step) {
@@ -77,117 +73,53 @@ class PackageAnalyser
         }
     }
 
-    private function writeStatus(bool $status): void
-    {
-        if ($status === true) {
-            $this->output->writeln(' ✅');
-        } else {
-            $this->output->writeln(' ⛔');
-        }
-    }
-
+    /**
+     * @throws NonExistentStepId
+     */
     public function analyse(): int
     {
         foreach ($this->steps as $step) {
             switch ($step['id']) {
                 case 'changelog':
-                    $this->output->write('Checking CHANGELOG.md existence');
-                    $status = $this->checkChangelogExistence();
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('changelog', $status);
+                    $this->alternateStepStatus('changelog', $this->checkChangelogExistence());
                     break;
                 case 'tests':
                     $status = $this->checkTestsDirectoryExistence() && $this->checkTestingToolExistence();
-                    $this->output->write('Checking for tests and testing tools');
-                    $this->writeStatus($status);
                     $this->alternateStepStatus('tests', $status);
                     break;
                 case 'ci':
-                    $status = $this->checkCiUsage();
-                    $this->output->write('Checking for CI usage');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('ci', $status);
+                    $this->alternateStepStatus('ci', $this->checkCiUsage());
                     break;
                 case 'coding-style':
-                    $status = $this->checkCodingStyleToolExistence();
-                    $this->output->write('Checking for a coding style fixer and linter');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('coding-style', $status);
+                    $this->alternateStepStatus('coding-style', $this->checkCodingStyleToolExistence());
                     break;
                 case 'readme':
-                    $status = $this->checkReadmeExistence();
-                    $this->output->write('Checking README.md existence');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('readme', $status);
+                    $this->alternateStepStatus('readme', $this->checkReadmeExistence());
                     break;
                 case 'license':
-                    $status = $this->checkLicenseExistence();
-                    $this->output->write('Checking LICENSE.md existence');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('license', $status);
+                    $this->alternateStepStatus('license', $this->checkLicenseExistence());
                     break;
                 case 'gitattributes':
-                    $status = $this->checkGitattributesExistence();
-                    $this->output->write('Checking .gitattributes existence');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('gitattributes', $status);
+                    $this->alternateStepStatus('gitattributes', $this->checkGitattributesExistence());
                     break;
                 case 'autoloader':
-                    $status = $this->checkSrcExistence();
-                    $this->output->write('Checking /src or /app existence');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('autoloader', $status);
+                    $this->alternateStepStatus('autoloader', $this->checkSrcOrAppExistence());
                     break;
                 case 'semantic-versioning':
-                    $this->output->write('Checking for usage of semantic versioning');
-                    $status = $this->checkSemanticVersioningUsage();
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('semantic-versioning', $status);
+                    $this->alternateStepStatus('semantic-versioning', $this->checkSemanticVersioningUsage());
                     break;
                 case 'vcs':
-                    $status = $this->checkVcsExistence();
-                    $this->output->write('Checking the utilisation of a source code management system like Git');
-                    $this->writeStatus($status);
-                    $this->alternateStepStatus('vcs', $status);
+                    $this->alternateStepStatus('vcs', $this->checkVcsExistence());
                     break;
                 case 'cli-binary':
-                    $this->output->write('Checking if package is written in 🐘');
-                    if ($this->isAPhpPackage()) {
-                        $this->writeStatus(true);
-                        $this->alternateStepStatus('php-package', true);
-                        $status = $this->checkCliBinaryDirectoryExistence();
-                        $message = sprintf('Checking if package is a CLI/TUI %s and placed in a /bin directory', $this->isACliOrTui == true ? '✅' : '❌');
-                        $this->output->write($message);
-                        if ($this->isACliOrTui) {
-                            $this->writeStatus($status);
-                            $this->alternateStepStatus('cli-binary', $status);
-                        } else {
-                            $this->output->writeln('');
-                        }
-                    } else {
-                        $this->output->writeln(' ❌');
-                    }
+                    $this->alternateStepStatus('php-package', $this->isAPhpPackage());
+                    $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence());
                     break;
                 case 'cli-phar':
-                    if ($this->isAPhpPackage()) {
-                        $status = $this->checkPharConfigurationExistence();
-                        $message = sprintf('Checking if package is a CLI/TUI %s and distributed via PHAR', $this->isACliOrTui == true ? '✅' : '❌');
-                        $this->output->write($message);
-                        if ($this->isACliOrTui) {
-                            $this->writeStatus($status);
-                            $this->alternateStepStatus('cli-phar', $status);
-                        } else {
-                            $this->output->writeln('');
-                        }
-                    }
+                    $this->alternateStepStatus('cli-phar', $this->checkPharConfigurationExistence());
                     break;
                 case 'composer-scripts':
-                    if ($this->isAPhpPackage()) {
-                        $status = $this->checkComposerScriptsExistence();
-                        $this->output->write('Checking if Composer scripts are utilised');
-                        $this->writeStatus($status);
-                        $this->alternateStepStatus('composer-scripts', $status);
-                    }
+                    $this->alternateStepStatus('composer-scripts', $this->checkComposerScriptsExistence());
                     break;
             }
         }
@@ -201,7 +133,6 @@ class PackageAnalyser
         if ($finder->depth(0)->directories()->name(['test*', 'spec*'])->in($this->directoryToAnalyse)->hasResults()) {
             return true;
         }
-        $this->violations[] = 'tests';
 
         return false;
     }
@@ -220,8 +151,6 @@ class PackageAnalyser
             }
         }
 
-        $this->violations[] = 'tests';
-
         return false;
     }
 
@@ -232,8 +161,6 @@ class PackageAnalyser
             return true;
         }
 
-        $this->violations[] = 'changelog';
-
         return false;
     }
 
@@ -243,7 +170,6 @@ class PackageAnalyser
         if ($finder->depth(0)->files()->name('README*')->in($this->directoryToAnalyse)->hasResults()) {
             return true;
         }
-        $this->violations[] = 'readme';
 
         return false;
     }
@@ -254,7 +180,6 @@ class PackageAnalyser
         if ($finder->depth(0)->files()->name('LICENSE*')->in($this->directoryToAnalyse)->hasResults()) {
             return true;
         }
-        $this->violations[] = 'license';
 
         return false;
     }
@@ -273,8 +198,6 @@ class PackageAnalyser
                 return true;
             }
         }
-
-        $this->violations[] = 'coding-style';
 
         return false;
     }
@@ -295,8 +218,6 @@ class PackageAnalyser
             return true;
         }
 
-        $this->violations[] = 'ci';
-
         return false;
     }
 
@@ -309,20 +230,16 @@ class PackageAnalyser
             return true;
         }
 
-        $this->violations[] = 'gitattributes';
-
         return false;
     }
 
-    private function checkSrcExistence(): bool
+    private function checkSrcOrAppExistence(): bool
     {
         $finder = new Finder();
 
         if ($finder->depth(0)->path(['app', 'src'])->in($this->directoryToAnalyse)->hasResults()) {
             return true;
         }
-
-        $this->violations[] = 'autoloader';
 
         return false;
     }
@@ -360,8 +277,6 @@ class PackageAnalyser
             return true;
         }
 
-        $this->violations[] = 'vcs';
-
         return false;
     }
 
@@ -385,16 +300,19 @@ class PackageAnalyser
 
                 if (count($matchingKeywords) > 0) {
                     $this->isACliOrTui = true;
+                    $this->alternateStepStatus('cli', true);
                 }
 
                 if ($this->isACliOrTui) {
                     $finder = new Finder();
 
                     if ($finder->depth(1)->path('bin')->in($this->directoryToAnalyse)->hasResults()) {
+                        $this->alternateStepStatus('cli-binary', true);
+
                         return true;
                     }
 
-                    $this->violations[] = 'cli-binary';
+                    $this->alternateStepStatus('cli-binary', false);
 
                     return false;
                 }
@@ -423,8 +341,6 @@ class PackageAnalyser
                         return true;
                     }
 
-                    $this->violations[] = 'cli-phar';
-
                     return false;
                 }
             }
@@ -446,13 +362,30 @@ class PackageAnalyser
         }
     }
 
-    public function getViolations(): array
-    {
-        return $this->violations;
-    }
-
     public function getSteps(): array
     {
         return $this->steps;
+    }
+
+    public function getViolations(): array
+    {
+        return array_filter($this->steps, fn ($step) => $step['status'] === false);
+    }
+
+    public function getStepsForTable(): array
+    {
+        $index = 1;
+        $steps = [];
+
+        foreach ($this->steps as $step) {
+            $status = ' ⛔';
+            if ($step['status'] === true) {
+                $status = ' ✅';
+            }
+            $steps[] = [$step['id'] => $index, $step['summary'] => $step['summary'], $step['status'] => $status];
+            $index++;
+        }
+
+        return $steps;
     }
 }
