@@ -31,7 +31,7 @@ package-analyser analyse [<path-to-package-directory>]
 The `--write-report` option will write a HTML report in the current directory based on the provided package.
 
 The `--violations-threshold` option defines the threshold on which the package analysis is considered invalid 
-and produces an exit status > 0. Defaults to `0`;
+and produces an exit status > 0. Defaults to `0`.
 
 ### Running tests
 
