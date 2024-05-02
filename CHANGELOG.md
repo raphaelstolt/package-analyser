@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Add `--violations-threshold` option, which defaults to 0.
+- Add `--violations-threshold` option, which defaults to `0`.
 - Utilise `Symfony\Component\Console\Helper\Table` for TUI output.
 
 ## [v1.0.1] - 2024-05-02
@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.2...HEAD
 
+[v1.0.2]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.1...v1.0.2
 [v1.0.1]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.0...v1.0.1
