@@ -42,6 +42,7 @@ class PackageAnalyser
             ['id' => 'coding-style', 'summary' => 'Enforce a coding style.', 'status' => false],
             ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => false],
             ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => false],
+            ['id' => 'gitignore', 'summary' => 'Keep a .gitignore file in the base directory of the package to keep unwanted files unversioned.', 'status' => false],
             ['id' => 'gitattributes', 'summary' => 'Keep a .gitattributes file in the base directory of the package to keep dist releases lean.', 'status' => false],
             ['id' => 'autoloader', 'summary' => 'Place domain code in a /src or app/ directory in the base directory of the package.', 'status' => false],
             ['id' => 'vcs', 'summary' => 'Utilise a source code management system like Git.', 'status' => false],
@@ -80,6 +81,9 @@ class PackageAnalyser
     {
         foreach ($this->steps as $step) {
             switch ($step['id']) {
+                case 'php-package':
+                    $this->alternateStepStatus('php-package', $this->isAPhpPackage());
+                    break;
                 case 'changelog':
                     $this->alternateStepStatus('changelog', $this->checkChangelogExistence());
                     break;
@@ -102,6 +106,9 @@ class PackageAnalyser
                 case 'gitattributes':
                     $this->alternateStepStatus('gitattributes', $this->checkGitattributesExistence());
                     break;
+                case 'gitignore':
+                    $this->alternateStepStatus('gitignore', $this->checkGitignoreExistence());
+                    break;
                 case 'autoloader':
                     $this->alternateStepStatus('autoloader', $this->checkSrcOrAppExistence());
                     break;
@@ -112,7 +119,6 @@ class PackageAnalyser
                     $this->alternateStepStatus('vcs', $this->checkVcsExistence());
                     break;
                 case 'cli-binary':
-                    $this->alternateStepStatus('php-package', $this->isAPhpPackage());
                     $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence());
                     break;
                 case 'cli-phar':
@@ -227,6 +233,18 @@ class PackageAnalyser
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitattributes')->in($this->directoryToAnalyse)->hasResults()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function checkGitignoreExistence(): bool
+    {
+        $finder = new Finder();
+        $finder->ignoreDotFiles(false);
+
+        if ($finder->depth(0)->files()->name('.gitignore')->in($this->directoryToAnalyse)->hasResults()) {
             return true;
         }
 
