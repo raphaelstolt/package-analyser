@@ -1,5 +1,10 @@
 # Package analyser
 
+![Test Status](https://github.com/raphaelstolt/package-analyser/workflows/test/badge.svg)
+[![Version](http://img.shields.io/packagist/v/stolt/package-analyser.svg?style=flat)](https://packagist.org/packages/stolt/package-analyser)
+![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
+[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
+
 The package analyser is a utility tool that analyses a 🐘 project/micro-📦
 for its structure, and provides tips on best practices for such one. It's also my first __TUI__ (Terminal User Interface)
 written in [Laravel Zero](https://laravel-zero.com/), so bear with me.
