@@ -7,6 +7,7 @@ namespace App\Domain;
 use App\Enum\ViolationStatus;
 use App\Exceptions\NonExistentPackageDirectory;
 use App\Exceptions\NonExistentStepId;
+use Illuminate\Support\Arr;
 use Symfony\Component\Finder\Finder;
 
 class PackageAnalyser
@@ -49,11 +50,8 @@ class PackageAnalyser
             ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => ViolationStatus::Irrelevant],
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => ViolationStatus::False],
         ];
-        $this->stepIds = [];
 
-        foreach ($this->steps as $step) {
-            $this->stepIds[] = $step['id'];
-        }
+        $this->stepIds = Arr::pluck($this->steps, 'id');
     }
 
     /**
