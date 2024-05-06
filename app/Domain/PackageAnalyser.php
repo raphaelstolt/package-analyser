@@ -7,7 +7,6 @@ namespace App\Domain;
 use App\Enum\ViolationStatus;
 use App\Exceptions\NonExistentPackageDirectory;
 use App\Exceptions\NonExistentStepId;
-use Illuminate\Console\OutputStyle;
 use Symfony\Component\Finder\Finder;
 
 class PackageAnalyser
@@ -19,8 +18,6 @@ class PackageAnalyser
     private array $stepIds;
 
     private bool $isACliOrTui = false;
-
-    private OutputStyle $output;
 
     /**
      * @throws NonExistentPackageDirectory
