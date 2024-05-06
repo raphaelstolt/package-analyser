@@ -197,6 +197,7 @@ class PackageAnalyser
             './vendor/bin/phpcbf',
             './vendor/bin/pint',
             './vendor/bin/php-cs-fixer',
+            './vendor/bin/ecs',
         ];
 
         foreach ($codingStyleToolBinaries as $codingStyleToolBinary) {

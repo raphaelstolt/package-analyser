@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.4] - 2024-05-07
+### Added
+
+- Add `ecs.php` existence check.
+
 ## [v1.0.3] - 2024-05-03
 ### Added
 
@@ -30,8 +35,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.4...HEAD
 
+[v1.0.4]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.3...v1.0.4
 [v1.0.3]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.2...v1.0.3
 [v1.0.2]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.1...v1.0.2
 [v1.0.1]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.0...v1.0.1
