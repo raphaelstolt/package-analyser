@@ -269,7 +269,7 @@ class PackageAnalyser
             return ViolationStatus::False;
         }
 
-        exec('cd '.realpath($this->getDirectoryToAnalyse()).' && git tag --list', $tags);
+        exec('cd '.realpath($this->getDirectoryToAnalyse()).' && git tag --list 2>&1', $tags);
 
         if (count($tags) === 0) {
             return ViolationStatus::False;
