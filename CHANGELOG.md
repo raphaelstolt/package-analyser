@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix several bugs discovered while writing integration tests.
+
+### Added
+
+- Add `phpstan` existence check.
+
 ## [v1.0.4] - 2024-05-07
 ### Added
 

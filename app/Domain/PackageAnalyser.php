@@ -39,6 +39,7 @@ class PackageAnalyser
             ['id' => 'ci', 'summary' => 'Use continuous integration.', 'status' => ViolationStatus::False],
             ['id' => 'readme', 'summary' => 'Provide a README.md in the base directory of the package.', 'status' => ViolationStatus::False],
             ['id' => 'coding-style', 'summary' => 'Enforce a coding style.', 'status' => ViolationStatus::False],
+            ['id' => 'static-analyse', 'summary' => 'Utilise static analysis tools like PHPStan.', 'status' => ViolationStatus::False],
             ['id' => 'semantic-versioning', 'summary' => 'Use Semantic Versioning to manage version numbers.', 'status' => ViolationStatus::False],
             ['id' => 'license', 'summary' => 'Include a license file in the base directory of the package.', 'status' => ViolationStatus::False],
             ['id' => 'gitignore', 'summary' => 'Keep a .gitignore file in the base directory of the package to keep unwanted files unversioned.', 'status' => ViolationStatus::False],
@@ -96,6 +97,9 @@ class PackageAnalyser
                     break;
                 case 'coding-style':
                     $this->alternateStepStatus('coding-style', $this->checkCodingStyleToolExistence());
+                    break;
+                case 'static-analyse':
+                    $this->alternateStepStatus('static-analyse', $this->checkStaticAnalysisToolExistence());
                     break;
                 case 'readme':
                     $this->alternateStepStatus('readme', $this->checkReadmeExistence());
@@ -202,6 +206,21 @@ class PackageAnalyser
 
         foreach ($codingStyleToolBinaries as $codingStyleToolBinary) {
             if (file_exists($codingStyleToolBinary)) {
+                return ViolationStatus::True;
+            }
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkStaticAnalysisToolExistence(): ViolationStatus
+    {
+        $staticAnalysisToolBinaries = [
+            $this->directoryToAnalyse.'/vendor/bin/phpstan',
+        ];
+
+        foreach ($staticAnalysisToolBinaries as $staticAnalysisToolBinary) {
+            if (file_exists($staticAnalysisToolBinary)) {
                 return ViolationStatus::True;
             }
         }

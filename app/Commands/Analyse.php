@@ -75,6 +75,7 @@ class Analyse extends Command
                 $this->packageAnalyser->getStepsForTable()[13],
                 $this->packageAnalyser->getStepsForTable()[14],
                 $this->packageAnalyser->getStepsForTable()[15],
+                $this->packageAnalyser->getStepsForTable()[16],
                 new TableSeparator(),
                 [new TableCell('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps. '.$violationText, ['colspan' => 3])],
             ]);
