@@ -10,6 +10,16 @@ it('requires a package-directory argument', function () {
     }
 });
 
-it('requires an existing package-directory argument', function () {
+it('fails an non-existing package-directory', function () {
     $this->artisan('analyse /tmpo')->assertExitCode(Command::FAILURE);
+});
+
+it('prints number of analysis steps', function () {
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Ran 16 analysis steps');
+});
+
+it('has violations in output', function () {
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('optimiseable aspects')->assertExitCode(
+        Command::FAILURE
+    );
 });

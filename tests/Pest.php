@@ -11,7 +11,10 @@
 |
 */
 
-uses(Tests\TestCase::class)->in('Feature');
+uses(Tests\TestCase::class)->beforeEach(function () {
+    $this->temporaryDirectory = setUpTemporaryDirectory();
+    exec('cd '.$this->temporaryDirectory.' && git init 2>&1');
+})->in('Feature');
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +41,31 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
-
-function something(): void
+function isWindows($os = PHP_OS): bool
 {
-    // ..
+    if (\strtoupper(\substr($os, 0, 3)) !== 'WIN') {
+        return false;
+    }
+
+    return true;
+}
+
+function setUpTemporaryDirectory(): string
+{
+    if (isWindows() === false) {
+        \ini_set('sys_temp_dir', '/tmp/pa');
+        $temporaryDirectory = '/tmp/pa';
+    } else {
+        $temporaryDirectory = \sys_get_temp_dir()
+            .DIRECTORY_SEPARATOR
+            .'pa';
+    }
+
+    if (! \file_exists($temporaryDirectory)) {
+        \mkdir($temporaryDirectory);
+    }
+
+    \copy(realpath('./composer.json'), $temporaryDirectory.DIRECTORY_SEPARATOR.'composer.json');
+
+    return $temporaryDirectory;
 }
