@@ -146,9 +146,9 @@ class PackageAnalyser
     private function checkTestingToolExistence(): ViolationStatus
     {
         $testingToolBinaries = [
-            './vendor/bin/phpspec',
-            './vendor/bin/phpunit',
-            './vendor/bin/pest',
+            $this->directoryToAnalyse.'/vendor/bin/phpspec',
+            $this->directoryToAnalyse.'/vendor/bin/phpunit',
+            $this->directoryToAnalyse.'/vendor/bin/pest',
         ];
 
         foreach ($testingToolBinaries as $testingToolBinary) {
@@ -193,11 +193,11 @@ class PackageAnalyser
     private function checkCodingStyleToolExistence(): ViolationStatus
     {
         $codingStyleToolBinaries = [
-            './vendor/bin/phpcs',
-            './vendor/bin/phpcbf',
-            './vendor/bin/pint',
-            './vendor/bin/php-cs-fixer',
-            './vendor/bin/ecs',
+            $this->directoryToAnalyse.'/vendor/bin/phpcs',
+            $this->directoryToAnalyse.'/vendor/bin/phpcbf',
+            $this->directoryToAnalyse.'/vendor/bin/pint',
+            $this->directoryToAnalyse.'/vendor/bin/php-cs-fixer',
+            $this->directoryToAnalyse.'/vendor/bin/ecs',
         ];
 
         foreach ($codingStyleToolBinaries as $codingStyleToolBinary) {
@@ -336,13 +336,13 @@ class PackageAnalyser
                 if ($this->isACliOrTui) {
                     $finder = new Finder();
 
-                    if ($finder->depth(1)->path('bin')->in($this->directoryToAnalyse)->hasResults()) {
+                    if ($finder->depth(0)->path('bin')->in($this->directoryToAnalyse)->hasResults()) {
                         $this->alternateStepStatus('cli-binary', ViolationStatus::True);
 
                         return ViolationStatus::True;
                     }
 
-                    $this->alternateStepStatus('cli-binary', ViolationStatus::True);
+                    $this->alternateStepStatus('cli-binary', ViolationStatus::False);
 
                     return ViolationStatus::False;
                 }

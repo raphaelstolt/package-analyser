@@ -10,7 +10,7 @@ test('throws exception for non existent package directory', function () {
     new PackageAnalyser($nonExistentPackageDirectory);
 })->throws(NonExistentPackageDirectory::class, sprintf("Provided package directory '%s' does not exist", '/tmp/non-existent-package-directory'));
 
-test('violations have status ViolationStatus::False', function () {
+test('violations have default status ViolationStatus::False', function () {
     $packageAnalyser = new PackageAnalyser('/tmp');
     $violations = $packageAnalyser->getViolations();
     foreach ($violations as $violation) {
