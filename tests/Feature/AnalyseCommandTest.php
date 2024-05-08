@@ -41,59 +41,42 @@ it('has its expected options', function () {
 });
 
 it('succeeds for failureless analysis', function () {
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitattributes');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitlab-ci.yml');
-
-    \exec('cd '.$this->temporaryDirectory.' && git config user.email "raphael.stolt@gmail.com" && git config user.name "Raphael Stolt" 2>&1');
-    \exec('cd '.$this->temporaryDirectory.' && touch foo.txt && git add foo.txt && git commit -m "Foo" && git tag v1.0.0 2>&1');
-
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'src')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'src');
-    }
-
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
-    }
-
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin', 0777, true);
-        \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpstan');
-        \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pint');
-    }
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'box.json');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'README.md');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'LICENSE.md');
+    setUpCompletePackage($this->temporaryDirectory);
 
     $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
 });
 
-it('succeeds for rc candidates', function () {
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitattributes');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitlab-ci.yml');
-
-    \exec('cd '.$this->temporaryDirectory.' && git config user.email "raphael.stolt@gmail.com" && git config user.name "Raphael Stolt" 2>&1');
+it('succeeds for release candidates', function () {
+    setUpCompletePackage($this->temporaryDirectory);
     \exec('cd '.$this->temporaryDirectory.' && touch foo.txt && git add foo.txt && git commit -m "Foo" && git tag RC-1.0.0 2>&1');
 
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'src')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'src');
-    }
-
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
-    }
-
-    if (! file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin')) {
-        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin', 0777, true);
-        \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpstan');
-        \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pint');
-    }
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'box.json');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'README.md');
-    \touch($this->temporaryDirectory.DIRECTORY_SEPARATOR.'LICENSE.md');
-
     $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
 });
+
+function setUpCompletePackage(string $temporaryDirectory): void
+{
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitattributes');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitlab-ci.yml');
+
+    \exec('cd '.$temporaryDirectory.' && git config user.email "raphael.stolt@gmail.com" && git config user.name "Raphael Stolt" 2>&1');
+    \exec('cd '.$temporaryDirectory.' && touch foo.txt && git add foo.txt && git commit -m "Foo" && git tag v1.0.0 2>&1');
+
+    if (! \file_exists($temporaryDirectory.DIRECTORY_SEPARATOR.'src')) {
+        \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'src');
+    }
+
+    if (! \file_exists($temporaryDirectory.DIRECTORY_SEPARATOR.'bin')) {
+        \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
+    }
+
+    if (! \file_exists($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin')) {
+        \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin', 0777, true);
+        \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpstan');
+        \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pint');
+    }
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'box.json');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'README.md');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'LICENSE.md');
+}
