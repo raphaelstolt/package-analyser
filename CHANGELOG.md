@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.6] - 2024-05-08
+### Fixed
+
+- Catch release candidates when checking for Semantic Versioning.
+
 ## [v1.0.5] - 2024-05-08
 ### Fixed
 
@@ -44,8 +49,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.6...HEAD
 
+[v1.0.6]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.5...v1.0.6
 [v1.0.5]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.4...v1.0.5
 [v1.0.4]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.3...v1.0.4
 [v1.0.3]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.2...v1.0.3
