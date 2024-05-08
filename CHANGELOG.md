@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.5] - 2024-05-08
 ### Fixed
 
 - Fix several bugs discovered while writing integration tests.
@@ -43,8 +44,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.5...HEAD
 
+[v1.0.5]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.4...v1.0.5
 [v1.0.4]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.3...v1.0.4
 [v1.0.3]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.2...v1.0.3
 [v1.0.2]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.1...v1.0.2
