@@ -296,7 +296,7 @@ class PackageAnalyser
 
         $usesSemanticVersioning = false;
         foreach ($tags as $tag) {
-            $tag = str_replace('v', '', $tag);
+            $tag = str_replace(['v', 'rc-', 'rc', 'V', 'RC-', 'RC'], '', $tag);
             if (preg_match('/^(\d+\.)?(\d+\.)?(\*|\d+)$/', $tag)) {
                 $usesSemanticVersioning = true;
             }
