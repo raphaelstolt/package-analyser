@@ -46,6 +46,7 @@
     ],
     "scripts": {
         "test": "./vendor/bin/pest",
+        "test-coverage-html": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html=coverage-report",
         "cs-fix": "./vendor/bin/pint -v",
         "cs-lint": "./vendor/bin/pint --test",
         "validate-gitattributes": "lean-package-validator validate"
