@@ -64,11 +64,11 @@ class PackageAnalyser
             throw new NonExistentStepId('Step id '.$stepId.' does not exist.');
         }
 
-        foreach ($this->steps as $index => $step) {
-            if ($step['id'] === $stepId) {
+        array_walk($this->steps, function ($array, $index) use ($stepId, $status) {
+            if ($array['id'] === $stepId) {
                 $this->steps[$index]['status'] = $status;
             }
-        }
+        });
     }
 
     /**
