@@ -61,7 +61,7 @@ class PackageAnalyser
     private function alternateStepStatus(string $stepId, ViolationStatus $status): void
     {
         if (! in_array($stepId, $this->stepIds)) {
-            throw new NonExistentStepId('Step id '.$stepId.' does not exist.');
+            throw new NonExistentStepId("Step id '".$stepId."' does not exist.");
         }
 
         array_walk($this->steps, function ($array, $index) use ($stepId, $status) {
