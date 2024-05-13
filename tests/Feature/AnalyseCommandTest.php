@@ -70,6 +70,10 @@ function setUpCompletePackage(string $temporaryDirectory): void
         \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
     }
 
+    if (! \file_exists($temporaryDirectory.DIRECTORY_SEPARATOR.'tests')) {
+        \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'tests');
+    }
+
     if (! \file_exists($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin')) {
         \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin', 0777, true);
         \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpstan');
