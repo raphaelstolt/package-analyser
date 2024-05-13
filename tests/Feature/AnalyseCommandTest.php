@@ -53,6 +53,18 @@ it('succeeds for release candidates', function () {
     $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
 });
 
+it('succeeds for GitHub CI', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    \unlink($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.gitlab-ci.yml');
+
+    if (! \file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.github')) {
+        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.github');
+        \mkdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.github'.DIRECTORY_SEPARATOR.'workflows');
+    }
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+});
+
 function setUpCompletePackage(string $temporaryDirectory): void
 {
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
@@ -78,6 +90,7 @@ function setUpCompletePackage(string $temporaryDirectory): void
         \mkdir($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin', 0777, true);
         \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phpstan');
         \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pint');
+        \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pest');
     }
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'box.json');
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
