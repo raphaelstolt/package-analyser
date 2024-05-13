@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.7] - 2024-05-13
+### Fixed
+
+- Return correct return value.
+
 ## [v1.0.6] - 2024-05-08
 ### Fixed
 

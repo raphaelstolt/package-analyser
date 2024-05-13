@@ -161,7 +161,7 @@ class PackageAnalyser
             }
         }
 
-        return ViolationStatus::True;
+        return ViolationStatus::False;
     }
 
     private function checkChangelogExistence(): ViolationStatus
