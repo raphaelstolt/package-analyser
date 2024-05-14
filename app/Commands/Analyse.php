@@ -14,7 +14,7 @@ use Symfony\Component\Console\Helper\TableSeparator;
 
 class Analyse extends Command
 {
-    public const VERSION = '1.0.7';
+    public const VERSION = '1.0.8';
 
     private PackageAnalyser $packageAnalyser;
 

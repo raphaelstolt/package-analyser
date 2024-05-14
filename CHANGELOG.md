@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.0.8] - 2024-05-14
+### Fixed
+
+- Fix several bugs in violation analysis.
+
 ## [v1.0.7] - 2024-05-13
 ### Fixed
 
@@ -54,8 +59,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.8...HEAD
 
+[v1.0.8]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.7...v1.0.8
 [v1.0.7]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.6...v1.0.7
 [v1.0.6]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.5...v1.0.6
 [v1.0.5]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.4...v1.0.5
