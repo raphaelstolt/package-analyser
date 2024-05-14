@@ -85,10 +85,8 @@ class PackageAnalyser
                     $this->alternateStepStatus('changelog', $this->checkChangelogExistence());
                     break;
                 case 'tests':
-                    $status = $this->checkTestsDirectoryExistence() && $this->checkTestingToolExistence();
-                    if ($status === true) {
-                        $this->alternateStepStatus('tests', ViolationStatus::True);
-                    } else {
+                    $this->alternateStepStatus('tests', ViolationStatus::True);
+                    if ($this->checkTestsDirectoryExistence() === ViolationStatus::False && $this->checkTestingToolExistence() === ViolationStatus::False) {
                         $this->alternateStepStatus('tests', ViolationStatus::False);
                     }
                     break;
@@ -284,7 +282,7 @@ class PackageAnalyser
 
     private function checkSemanticVersioningUsage(): ViolationStatus
     {
-        if ($this->checkVcsExistence() === false) {
+        if ($this->checkVcsExistence() === ViolationStatus::False) {
             return ViolationStatus::False;
         }
 
@@ -329,7 +327,7 @@ class PackageAnalyser
 
     private function isAPhpPackage(): ViolationStatus
     {
-        if (file_exists('composer.json')) {
+        if (file_exists($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json')) {
             return ViolationStatus::True;
         }
 
@@ -341,7 +339,7 @@ class PackageAnalyser
      */
     private function checkCliBinaryDirectoryExistence(): ViolationStatus
     {
-        if ($this->isAPhpPackage()) {
+        if ($this->isAPhpPackage() === ViolationStatus::True) {
             $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
 
             if (isset($composerJson['keywords'])) {
@@ -369,11 +367,13 @@ class PackageAnalyser
 
             return ViolationStatus::Irrelevant;
         }
+
+        return ViolationStatus::Irrelevant;
     }
 
     private function checkPharConfigurationExistence(): ViolationStatus
     {
-        if ($this->isAPhpPackage()) {
+        if ($this->isAPhpPackage() === ViolationStatus::True) {
             $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
 
             if (isset($composerJson['keywords'])) {
@@ -396,11 +396,13 @@ class PackageAnalyser
 
             return ViolationStatus::Irrelevant;
         }
+
+        return ViolationStatus::Irrelevant;
     }
 
     private function checkComposerScriptsExistence(): ViolationStatus
     {
-        if ($this->isAPhpPackage()) {
+        if ($this->isAPhpPackage() === ViolationStatus::True) {
             $composerJson = json_decode(file_get_contents('composer.json'), true);
 
             if (isset($composerJson['scripts'])) {
@@ -411,6 +413,8 @@ class PackageAnalyser
 
             return ViolationStatus::False;
         }
+
+        return ViolationStatus::False;
     }
 
     public function getSteps(): array
