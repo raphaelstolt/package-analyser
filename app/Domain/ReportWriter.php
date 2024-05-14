@@ -13,13 +13,10 @@ class ReportWriter
 
     private string $directoryAnalysed;
 
-    private string $outputDirectory;
-
-    public function __construct(PackageAnalyser $analyser, string $outputDirectory)
+    public function __construct(PackageAnalyser $analyser, readonly string $outputDirectory)
     {
         $this->analyseSteps = $analyser->getSteps();
         $this->directoryAnalysed = $analyser->getDirectoryToAnalyse();
-        $this->outputDirectory = $outputDirectory;
     }
 
     public function write(): bool

@@ -12,8 +12,6 @@ use Symfony\Component\Finder\Finder;
 
 class PackageAnalyser
 {
-    private string $directoryToAnalyse;
-
     private array $steps;
 
     private array $stepIds;
@@ -23,10 +21,8 @@ class PackageAnalyser
     /**
      * @throws NonExistentPackageDirectory
      */
-    public function __construct(string $directoryToAnalyse)
+    public function __construct(readonly string $directoryToAnalyse)
     {
-        $this->directoryToAnalyse = $directoryToAnalyse;
-
         if (! file_exists($directoryToAnalyse)) {
             $exceptionMessage = sprintf("Provided package directory '%s' does not exist.", $directoryToAnalyse);
             throw new NonExistentPackageDirectory($exceptionMessage);
