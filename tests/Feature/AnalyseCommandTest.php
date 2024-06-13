@@ -10,7 +10,7 @@ it('requires a package-directory argument', function () {
     }
 });
 
-it('fails an non-existing package-directory', function () {
+it('fails on non existent package directory', function () {
     $this->artisan('analyse /tmpo')->assertExitCode(Command::FAILURE);
 });
 
