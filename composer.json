@@ -13,12 +13,13 @@
     "require": {
         "php": "^8.2",
         "laravel-zero/framework": "^11.0",
-        "nunomaduro/termwind": "^2.0"
+        "nunomaduro/termwind": "^2.0",
+        "symfony/yaml": "^7.1"
     },
     "require-dev": {
         "laravel/pint": "^1.17",
         "mockery/mockery": "^1.6",
-        "pestphp/pest": "^2.22",
+        "pestphp/pest": "^2.35",
         "stolt/lean-package-validator": "^4.0.0"
     },
     "autoload": {
