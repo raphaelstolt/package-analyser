@@ -17,7 +17,7 @@ uses(Tests\TestCase::class)->beforeEach(function () {
     $this->temporaryDirectory = setUpTemporaryDirectory();
     exec('cd '.$this->temporaryDirectory.' && git init 2>&1');
 })->afterEach(function () {
-    $filesystem = new Filesystem();
+    $filesystem = new Filesystem;
     $filesystem->deleteDirectory($this->temporaryDirectory);
 })->in('Feature');
 

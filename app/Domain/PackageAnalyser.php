@@ -46,6 +46,7 @@ class PackageAnalyser
             ['id' => 'cli-binary', 'summary' => 'Put CLI/TUI binaries in a /bin directory in the base directory of the package.', 'status' => ViolationStatus::Irrelevant],
             ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => ViolationStatus::Irrelevant],
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => ViolationStatus::False],
+            ['id' => 'eol-php', 'summary' => 'Use a supported PHP version.', 'status' => ViolationStatus::False],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -125,6 +126,9 @@ class PackageAnalyser
                 case 'composer-scripts':
                     $this->alternateStepStatus('composer-scripts', $this->checkComposerScriptsExistence());
                     break;
+                case 'eol-php':
+                    $this->alternateStepStatus('eol-php', $this->checkComposerPHPVersion());
+                    break;
             }
         }
 
@@ -133,7 +137,7 @@ class PackageAnalyser
 
     private function checkTestsDirectoryExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         if ($finder->depth(0)->directories()->name(['test*', 'spec*'])->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
         }
@@ -160,7 +164,7 @@ class PackageAnalyser
 
     private function checkChangelogExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         if ($finder->depth(0)->files()->name('CHANGELOG*')->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
         }
@@ -170,7 +174,7 @@ class PackageAnalyser
 
     private function checkReadmeExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         if ($finder->depth(0)->files()->name('README*')->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
         }
@@ -180,7 +184,7 @@ class PackageAnalyser
 
     private function checkLicenseExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         if ($finder->depth(0)->files()->name('LICENSE*')->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
         }
@@ -224,14 +228,14 @@ class PackageAnalyser
 
     private function checkCiUsage(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(1)->path('.github/workflows')->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
         }
 
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitlab-ci*')->in($this->directoryToAnalyse)->hasResults()) {
@@ -243,7 +247,7 @@ class PackageAnalyser
 
     private function checkGitattributesExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitattributes')->in($this->directoryToAnalyse)->hasResults()) {
@@ -255,7 +259,7 @@ class PackageAnalyser
 
     private function checkGitignoreExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->ignoreDotFiles(false);
 
         if ($finder->depth(0)->files()->name('.gitignore')->in($this->directoryToAnalyse)->hasResults()) {
@@ -267,7 +271,7 @@ class PackageAnalyser
 
     private function checkSrcOrAppExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
 
         if ($finder->depth(0)->path(['app', 'src'])->in($this->directoryToAnalyse)->hasResults()) {
             return ViolationStatus::True;
@@ -305,7 +309,7 @@ class PackageAnalyser
 
     private function checkVcsExistence(): ViolationStatus
     {
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->ignoreDotFiles(false);
         $finder->ignoreVCS(false);
 
@@ -347,7 +351,7 @@ class PackageAnalyser
                 }
 
                 if ($this->isACliOrTui) {
-                    $finder = new Finder();
+                    $finder = new Finder;
 
                     if ($finder->depth(0)->path('bin')->in($this->directoryToAnalyse)->hasResults()) {
                         $this->alternateStepStatus('cli-binary', ViolationStatus::True);
@@ -380,7 +384,7 @@ class PackageAnalyser
                 }
 
                 if ($this->isACliOrTui) {
-                    $finder = new Finder();
+                    $finder = new Finder;
 
                     if ($finder->depth(0)->files()->name('box.json*')->in($this->directoryToAnalyse)->hasResults()) {
                         return ViolationStatus::True;
@@ -399,10 +403,29 @@ class PackageAnalyser
     private function checkComposerScriptsExistence(): ViolationStatus
     {
         if ($this->isAPhpPackage() === ViolationStatus::True) {
-            $composerJson = json_decode(file_get_contents('composer.json'), true);
+            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
 
             if (isset($composerJson['scripts'])) {
                 if (count($composerJson['scripts']) > 0) {
+                    return ViolationStatus::True;
+                }
+            }
+
+            return ViolationStatus::False;
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkComposerPHPVersion(): ViolationStatus
+    {
+        $latestSupportedPHPVersion = 8.1;
+
+        if ($this->isAPhpPackage() === ViolationStatus::True) {
+            $composerJson = json_decode(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'composer.json'), true);
+
+            if (isset($composerJson['require']['php'])) {
+                if (floatval(str_replace(['^', '~', '>='], '', $composerJson['require']['php'])) >= floatval($latestSupportedPHPVersion)) {
                     return ViolationStatus::True;
                 }
             }

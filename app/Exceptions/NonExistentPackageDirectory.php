@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class NonExistentPackageDirectory extends \Exception
-{
-}
+class NonExistentPackageDirectory extends \Exception {}

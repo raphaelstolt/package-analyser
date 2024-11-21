@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.1.0] - 2024-11-21
+### Added
+
+- Add `eol'ed PHP version` usage check.
+
 ## [v1.0.8] - 2024-05-14
 ### Fixed
 
@@ -59,8 +64,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.8...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.1.0...HEAD
 
+[v1.1.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.8...v1.1.0
 [v1.0.8]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.7...v1.0.8
 [v1.0.7]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.6...v1.0.7
 [v1.0.6]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.5...v1.0.6

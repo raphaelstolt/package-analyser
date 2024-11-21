@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class NonExistentStepId extends \Exception
-{
-}
+class NonExistentStepId extends \Exception {}
