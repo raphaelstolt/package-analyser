@@ -55,13 +55,19 @@ class PackageAnalyser
     /**
      * @throws NonExistentStepId
      */
-    private function alternateStepStatus(string $stepId, ViolationStatus $status): void
+    private function alternateStepStatus(string $stepId, ViolationStatus $status, array $stepsToOmit = []): void
     {
         if (! in_array($stepId, $this->stepIds)) {
             throw new NonExistentStepId("Step id '".$stepId."' does not exist.");
         }
 
-        array_walk($this->steps, function ($array, $index) use ($stepId, $status) {
+        array_walk($this->steps, function ($array, $index) use ($stepId, $status, $stepsToOmit) {
+            if (in_array($array['id'], $stepsToOmit)) {
+                $this->steps[$index]['status'] = ViolationStatus::Omitted;
+
+                return;
+            }
+
             if ($array['id'] === $stepId) {
                 $this->steps[$index]['status'] = $status;
             }
@@ -71,63 +77,63 @@ class PackageAnalyser
     /**
      * @throws NonExistentStepId
      */
-    public function analyse(): int
+    public function analyse(array $stepsToOmit): int
     {
         foreach ($this->steps as $step) {
             switch ($step['id']) {
                 case 'php-package':
-                    $this->alternateStepStatus('php-package', $this->isAPhpPackage());
+                    $this->alternateStepStatus('php-package', $this->isAPhpPackage(), $stepsToOmit);
                     break;
                 case 'changelog':
-                    $this->alternateStepStatus('changelog', $this->checkChangelogExistence());
+                    $this->alternateStepStatus('changelog', $this->checkChangelogExistence(), $stepsToOmit);
                     break;
                 case 'tests':
-                    $this->alternateStepStatus('tests', ViolationStatus::True);
+                    $this->alternateStepStatus('tests', ViolationStatus::True, $stepsToOmit);
                     if ($this->checkTestsDirectoryExistence() === ViolationStatus::False && $this->checkTestingToolExistence() === ViolationStatus::False) {
-                        $this->alternateStepStatus('tests', ViolationStatus::False);
+                        $this->alternateStepStatus('tests', ViolationStatus::False, $stepsToOmit);
                     }
                     break;
                 case 'ci':
-                    $this->alternateStepStatus('ci', $this->checkCiUsage());
+                    $this->alternateStepStatus('ci', $this->checkCiUsage(), $stepsToOmit);
                     break;
                 case 'coding-style':
-                    $this->alternateStepStatus('coding-style', $this->checkCodingStyleToolExistence());
+                    $this->alternateStepStatus('coding-style', $this->checkCodingStyleToolExistence(), $stepsToOmit);
                     break;
                 case 'static-analyse':
-                    $this->alternateStepStatus('static-analyse', $this->checkStaticAnalysisToolExistence());
+                    $this->alternateStepStatus('static-analyse', $this->checkStaticAnalysisToolExistence(), $stepsToOmit);
                     break;
                 case 'readme':
-                    $this->alternateStepStatus('readme', $this->checkReadmeExistence());
+                    $this->alternateStepStatus('readme', $this->checkReadmeExistence(), $stepsToOmit);
                     break;
                 case 'license':
-                    $this->alternateStepStatus('license', $this->checkLicenseExistence());
+                    $this->alternateStepStatus('license', $this->checkLicenseExistence(), $stepsToOmit);
                     break;
                 case 'gitattributes':
-                    $this->alternateStepStatus('gitattributes', $this->checkGitattributesExistence());
+                    $this->alternateStepStatus('gitattributes', $this->checkGitattributesExistence(), $stepsToOmit);
                     break;
                 case 'gitignore':
-                    $this->alternateStepStatus('gitignore', $this->checkGitignoreExistence());
+                    $this->alternateStepStatus('gitignore', $this->checkGitignoreExistence(), $stepsToOmit);
                     break;
                 case 'autoloader':
-                    $this->alternateStepStatus('autoloader', $this->checkSrcOrAppExistence());
+                    $this->alternateStepStatus('autoloader', $this->checkSrcOrAppExistence(), $stepsToOmit);
                     break;
                 case 'semantic-versioning':
-                    $this->alternateStepStatus('semantic-versioning', $this->checkSemanticVersioningUsage());
+                    $this->alternateStepStatus('semantic-versioning', $this->checkSemanticVersioningUsage(), $stepsToOmit);
                     break;
                 case 'vcs':
-                    $this->alternateStepStatus('vcs', $this->checkVcsExistence());
+                    $this->alternateStepStatus('vcs', $this->checkVcsExistence(), $stepsToOmit);
                     break;
                 case 'cli-binary':
-                    $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence());
+                    $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence(), $stepsToOmit);
                     break;
                 case 'cli-phar':
-                    $this->alternateStepStatus('cli-phar', $this->checkPharConfigurationExistence());
+                    $this->alternateStepStatus('cli-phar', $this->checkPharConfigurationExistence(), $stepsToOmit);
                     break;
                 case 'composer-scripts':
-                    $this->alternateStepStatus('composer-scripts', $this->checkComposerScriptsExistence());
+                    $this->alternateStepStatus('composer-scripts', $this->checkComposerScriptsExistence(), $stepsToOmit);
                     break;
                 case 'eol-php':
-                    $this->alternateStepStatus('eol-php', $this->checkComposerPHPVersion());
+                    $this->alternateStepStatus('eol-php', $this->checkComposerPHPVersion(), $stepsToOmit);
                     break;
             }
         }
@@ -456,7 +462,8 @@ class PackageAnalyser
             if ($step['status'] === ViolationStatus::True) {
                 $status = ' ✅';
             }
-            if ($step['status'] === ViolationStatus::Irrelevant) {
+
+            if ($step['status'] === ViolationStatus::Irrelevant || $step['status'] === ViolationStatus::Omitted) {
                 $status = ' 🔕';
             }
             $steps[] = ['id' => $index, 'summary' => $step['summary'], 'status' => $status];

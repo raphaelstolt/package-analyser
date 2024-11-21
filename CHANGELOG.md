@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.2.0] - 2024-11-26
+### Added
+
+- Add possibility to add a configuration for analyse steps to omit.
+
 ## [v1.1.0] - 2024-11-21
 ### Added
 

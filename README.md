@@ -33,10 +33,23 @@ package-analyser analyse [<path-to-package-directory>]
 
 ### Available options
 
-The `--write-report` option will write a HTML report in the current directory based on the provided package.
+The `--configuration` option allows the usage of a configuration with analyse steps to ignore. If no configuration
+is provided the tool will look for an existing `.pa.yml` file per default.
+
+The `--write-report` option will write an HTML report in the current directory based on the provided package.
 
 The `--violations-threshold` option defines the threshold on which the package analysis is considered invalid 
 and produces a non-zero exit code. Defaults to `0`.
+
+### Configuration
+
+To omit steps from the package analysis it's possible to configure these like shown next.
+
+```yaml
+stepsToOmit:
+    - static-analyse
+    - eol-php
+```
 
 ### Running tests
 
