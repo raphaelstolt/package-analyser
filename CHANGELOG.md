@@ -69,8 +69,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.2.0...HEAD
 
+[v1.2.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.8...v1.1.0
 [v1.0.8]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.7...v1.0.8
 [v1.0.7]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.6...v1.0.7
