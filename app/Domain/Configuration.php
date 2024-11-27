@@ -62,10 +62,6 @@ class Configuration
 
     public function getStepsToOmit(): array
     {
-        if ($this->yamlConfig === null) {
-            $this->yamlConfig = Yaml::parseFile($this->config);
-        }
-
         if (isset($this->yamlConfig['stepsToOmit'])) {
             return array_values($this->yamlConfig['stepsToOmit']);
         }

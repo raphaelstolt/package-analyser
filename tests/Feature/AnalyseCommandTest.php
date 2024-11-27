@@ -37,7 +37,7 @@ it('writes a HTML report if desired', function () {
 });
 
 it('has its expected options', function () {
-    $this->artisan('analyse --help')->expectsOutputToContain('--write-report', '--violations-threshold[=VIOLATIONS-THRESHOLD]');
+    $this->artisan('analyse --help')->expectsOutputToContain('--write-report', '--violations-threshold[=VIOLATIONS-THRESHOLD]', '--configuration');
 });
 
 it('succeeds for failureless analysis', function () {
@@ -63,6 +63,25 @@ it('succeeds for GitHub CI', function () {
     }
 
     $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+});
+
+it('informs about configuration usage', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+
+    $yamlContent = <<<'YAML'
+stepsToOmit:
+    - eol-php
+    - cli-phar
+YAML;
+
+    \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
+
+    $this->assertFileExists(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+    $this->artisan('analyse '.$this->temporaryDirectory.' --configuration=.pa.yml')->expectsOutputToContain('Using configuration');
+
+    \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
 });
 
 function setUpCompletePackage(string $temporaryDirectory): void
