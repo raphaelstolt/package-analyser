@@ -43,7 +43,8 @@ and produces a non-zero exit code. Defaults to `0`.
 
 ### Configuration
 
-To omit steps from the package analysis it's possible to configure these like shown next.
+To omit steps from the package analysis it's possible to configure these like shown next. The available
+steps are defined in [PackageAnalyser.php](app/Domain/PackageAnalyser.php).
 
 ```yaml
 stepsToOmit:
