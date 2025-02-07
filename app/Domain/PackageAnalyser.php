@@ -47,6 +47,7 @@ class PackageAnalyser
             ['id' => 'cli-phar', 'summary' => 'Distribute CLI/TUI binaries via PHAR.', 'status' => ViolationStatus::Irrelevant],
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => ViolationStatus::False],
             ['id' => 'eol-php', 'summary' => 'Use a supported PHP version.', 'status' => ViolationStatus::False],
+            ['id' => 'peck', 'summary' => 'Utilise Peck for detecting spelling mistakes.', 'status' => ViolationStatus::False],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -122,6 +123,9 @@ class PackageAnalyser
                     break;
                 case 'vcs':
                     $this->alternateStepStatus('vcs', $this->checkVcsExistence(), $stepsToOmit);
+                    break;
+                case 'peck':
+                    $this->alternateStepStatus('peck', $this->checkPeckExistence(), $stepsToOmit);
                     break;
                 case 'cli-binary':
                     $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence(), $stepsToOmit);
@@ -320,6 +324,19 @@ class PackageAnalyser
         $finder->ignoreVCS(false);
 
         if ($finder->depth(0)->path('.git')->in($this->directoryToAnalyse)->hasResults()) {
+            return ViolationStatus::True;
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkPeckExistence(): ViolationStatus
+    {
+        $finder = new Finder;
+        $finder->ignoreDotFiles(false);
+        $finder->ignoreVCS(false);
+
+        if ($finder->depth(0)->path('vendor/bin')->in($this->directoryToAnalyse)->contains('peck')) {
             return ViolationStatus::True;
         }
 
