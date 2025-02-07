@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.3.0] - 2025-02-07
+### Added
+
+- Add [Peck](https://github.com/peckphp/peck/) analyse step.
+
 ## [v1.2.0] - 2024-11-26
 ### Added
 
@@ -69,8 +74,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.3.0...HEAD
 
+[v1.3.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.8...v1.1.0
 [v1.0.8]: https://github.com/raphaelstolt/package-analyser/compare/v1.0.7...v1.0.8
