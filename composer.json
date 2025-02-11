@@ -13,12 +13,13 @@
     "require": {
         "php": "^8.2",
         "laravel-zero/framework": "^11.0",
-        "nunomaduro/termwind": "^2.0",
+        "nunomaduro/termwind": "^2.0 || ^2.3",
         "symfony/yaml": "^7.1"
     },
     "require-dev": {
         "laravel/pint": "^1.17",
         "mockery/mockery": "^1.6",
+        "peckphp/peck": "^0.1.2",
         "pestphp/pest": "^2.35",
         "stolt/lean-package-validator": "^4.0.0"
     },
@@ -50,6 +51,7 @@
         "test-coverage-html": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html=coverage-report",
         "cs-fix": "./vendor/bin/pint -v",
         "cs-lint": "./vendor/bin/pint --test",
-        "validate-gitattributes": "lean-package-validator validate"
+        "validate-gitattributes": "lean-package-validator validate",
+        "spell-check": "./vendor/bin/peck"
     }
 }

@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "ignore": {
+        "words": [
+            "php",
+            "analyser",
+            "analyse",
+            "yaml",
+            "readme",
+            "gitattributes",
+            "gitignore",
+            "vcs",
+            "phar",
+            "tui",
+            "analysed"
+        ],
+        "paths": []
+    }
+}
