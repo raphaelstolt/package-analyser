@@ -94,6 +94,7 @@ class Analyse extends Command
                 $packageAnalyser->getStepsForTable()[16],
                 $packageAnalyser->getStepsForTable()[17],
                 $packageAnalyser->getStepsForTable()[18],
+                $packageAnalyser->getStepsForTable()[19],
                 new TableSeparator,
                 [new TableCell('Ran <info>'.$amountOfAnalysisSteps.'</info> analysis steps. '.$violationText.$omitText, ['colspan' => 3])],
             ]);

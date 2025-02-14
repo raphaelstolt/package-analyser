@@ -48,6 +48,7 @@ class PackageAnalyser
             ['id' => 'composer-scripts', 'summary' => 'Utilise Composer scripts.', 'status' => ViolationStatus::False],
             ['id' => 'eol-php', 'summary' => 'Use a supported PHP version.', 'status' => ViolationStatus::False],
             ['id' => 'peck', 'summary' => 'Utilise Peck for detecting spelling mistakes.', 'status' => ViolationStatus::False],
+            ['id' => 'rector', 'summary' => 'Utilise Rector to continuously refactor your code.', 'status' => ViolationStatus::False],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -126,6 +127,9 @@ class PackageAnalyser
                     break;
                 case 'peck':
                     $this->alternateStepStatus('peck', $this->checkPeckExistence(), $stepsToOmit);
+                    break;
+                case 'rector':
+                    $this->alternateStepStatus('rector', $this->checkRectorExistence(), $stepsToOmit);
                     break;
                 case 'cli-binary':
                     $this->alternateStepStatus('cli-binary', $this->checkCliBinaryDirectoryExistence(), $stepsToOmit);
@@ -324,6 +328,19 @@ class PackageAnalyser
         $finder->ignoreVCS(false);
 
         if ($finder->depth(0)->path('.git')->in($this->directoryToAnalyse)->hasResults()) {
+            return ViolationStatus::True;
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkRectorExistence(): ViolationStatus
+    {
+        $finder = new Finder;
+        $finder->ignoreDotFiles(false);
+        $finder->ignoreVCS(false);
+
+        if ($finder->depth(0)->path('vendor/bin')->in($this->directoryToAnalyse)->contains('rector')) {
             return ViolationStatus::True;
         }
 

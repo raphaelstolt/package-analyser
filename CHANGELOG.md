@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.4.0] - 2025-02-14
+### Added
+
+- Add [Rector](https://github.com/rectorphp/rector) analyse step.
+
 ## [v1.3.0] - 2025-02-07
 ### Added
 
