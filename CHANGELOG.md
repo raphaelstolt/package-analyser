@@ -7,10 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [v1.5.0] - 2025-02-19
+## [v1.5.0] - 2025-02-18
 ### Added
 
-- Add analyse step for outdated __direct__ Composer dependencies. Closes 
+- Add analyse step for outdated __direct__ Composer dependencies. Closes [#4](https://github.com/raphaelstolt/package-analyser/issues/4).
 
 ## [v1.4.0] - 2025-02-14
 ### Added
