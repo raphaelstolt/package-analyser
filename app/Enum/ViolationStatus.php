@@ -9,6 +9,5 @@ enum ViolationStatus
     case False;
     case True;
     case Irrelevant;
-
     case Omitted;
 }

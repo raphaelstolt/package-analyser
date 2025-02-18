@@ -66,9 +66,9 @@ class Analyse extends Command
             }
 
             if (count($stepsToOmit) > 0) {
-                $omitText = 'Omitted <info>'.count($stepsToOmit).'</info> analyse step.';
+                $omitText = ' Omitted <info>'.count($stepsToOmit).'</info> analyse step.';
                 if (count($stepsToOmit) > 1) {
-                    $omitText = 'Omitted <info>'.count($stepsToOmit).'</info> analyse steps.';
+                    $omitText = ' Omitted <info>'.count($stepsToOmit).'</info> analyse steps.';
                 }
             }
 
