@@ -49,6 +49,7 @@ class PackageAnalyser
             ['id' => 'eol-php', 'summary' => 'Use a supported PHP version.', 'status' => ViolationStatus::False],
             ['id' => 'peck', 'summary' => 'Utilise Peck for detecting spelling mistakes.', 'status' => ViolationStatus::False],
             ['id' => 'rector', 'summary' => 'Utilise Rector to continuously refactor your code.', 'status' => ViolationStatus::False],
+            ['id' => 'composer-outdated', 'summary' => 'Update your direct Composer dependencies.', 'status' => ViolationStatus::False],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -139,6 +140,9 @@ class PackageAnalyser
                     break;
                 case 'composer-scripts':
                     $this->alternateStepStatus('composer-scripts', $this->checkComposerScriptsExistence(), $stepsToOmit);
+                    break;
+                case 'composer-outdated':
+                    $this->alternateStepStatus('composer-outdated', $this->checkComposerOutdatedDirectDependencies(), $stepsToOmit);
                     break;
                 case 'eol-php':
                     $this->alternateStepStatus('eol-php', $this->checkComposerPHPVersion(), $stepsToOmit);
@@ -449,6 +453,29 @@ class PackageAnalyser
                 if (count($composerJson['scripts']) > 0) {
                     return ViolationStatus::True;
                 }
+            }
+
+            return ViolationStatus::False;
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkComposerOutdatedDirectDependencies(): ViolationStatus
+    {
+        if ($this->isAPhpPackage() === ViolationStatus::True) {
+            $composerOutdatedCommand = 'composer outdated --format=json --direct';
+
+            exec($composerOutdatedCommand, $output, $returnCode);
+            $output = implode(PHP_EOL, $output);
+            $outdatedJson = json_decode($output, true);
+
+            if ($outdatedJson === '' || ! isset($outdatedJson['installed'])) {
+                return ViolationStatus::False;
+            }
+
+            if (count($outdatedJson['installed']) > 0) {
+                return ViolationStatus::True;
             }
 
             return ViolationStatus::False;

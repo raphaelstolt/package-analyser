@@ -15,7 +15,7 @@ it('fails on non existent package directory', function () {
 });
 
 it('prints number of analysis steps', function () {
-    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Ran 20 analysis steps');
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Ran 21 analysis steps');
 });
 
 it('has success emoji for successful analyse step', function () {
