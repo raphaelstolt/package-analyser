@@ -52,6 +52,11 @@
         "cs-fix": "./vendor/bin/pint -v",
         "cs-lint": "./vendor/bin/pint --test",
         "validate-gitattributes": "lean-package-validator validate",
-        "spell-check": "./vendor/bin/peck"
+        "spell-check": "./vendor/bin/peck",
+        "pre-commit-check": [
+            "@test",
+            "@cs-lint",
+            "@spell-check"
+        ]
     }
 }
