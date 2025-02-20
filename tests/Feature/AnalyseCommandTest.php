@@ -76,10 +76,25 @@ YAML;
 
     \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
 
-    $this->assertFileExists(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
-
     $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
     $this->artisan('analyse '.$this->temporaryDirectory.' --configuration=.pa.yml')->expectsOutputToContain('Using configuration');
+
+    \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
+});
+
+it('analyses successfully with omitted steps', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    rmdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
+
+    $yamlContent = <<<'YAML'
+stepsToOmit:
+    - cli-binary
+YAML;
+
+    \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Omitted 1 analyse step');
 
     \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
 });

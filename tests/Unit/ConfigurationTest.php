@@ -5,6 +5,9 @@ use App\Domain\PackageAnalyser;
 use App\Exceptions\InvalidConfiguration;
 
 test('it detects non available and available configuration', function () {
+    if (file_exists(getcwd().DIRECTORY_SEPARATOR.'.pa.yml')) {
+        unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
+    }
     $configuration = new Configuration(new PackageAnalyser(getcwd()));
 
     expect($configuration->hasConfiguration())->toBeFalse();
