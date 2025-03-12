@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v1.5.1] - 2025-03-12
+### Added
+
+- Add check for [Mago](https://mago.carthage.software/#/getting-started/configuration) configuration in coding style step.
+
 ## [v1.5.0] - 2025-02-18
 ### Added
 
@@ -84,8 +89,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/raphaelstolt/package-analyser/compare/v1.5.1...HEAD
 
+[v1.5.1]: https://github.com/raphaelstolt/package-analyser/compare/v1.5.0...v1.5.1
 [v1.5.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/raphaelstolt/package-analyser/compare/v1.2.0...v1.3.0
