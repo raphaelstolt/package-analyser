@@ -230,7 +230,6 @@ class PackageAnalyser
             return ViolationStatus::True;
         }
 
-
         return ViolationStatus::False;
     }
 
