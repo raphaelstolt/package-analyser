@@ -226,6 +226,11 @@ class PackageAnalyser
             }
         }
 
+        if (file_exists($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'mago.toml')) {
+            return ViolationStatus::True;
+        }
+
+
         return ViolationStatus::False;
     }
 
