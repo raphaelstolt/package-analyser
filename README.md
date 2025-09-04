@@ -4,6 +4,7 @@
 [![Version](http://img.shields.io/packagist/v/stolt/package-analyser.svg?style=flat)](https://packagist.org/packages/stolt/package-analyser)
 ![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
+![llms.txt](https://img.shields.io/badge/llms.txt-available-blue.svg?style=flat)
 
 <p align="center">
     <img src="pa-logo.png"

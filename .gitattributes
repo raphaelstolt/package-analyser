@@ -10,6 +10,7 @@ box.json export-ignore
 CHANGELOG.md export-ignore
 composer.lock export-ignore
 LICENSE.md export-ignore
+llms.txt export-ignore
 pa-logo.png export-ignore
 peck.json export-ignore
 phpunit.xml.dist export-ignore

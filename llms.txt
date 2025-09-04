@@ -1,0 +1,9 @@
+# package analyser
+
+> The package-analyser is a utility tool that analyses a PHP project/micro-package for its structure and provides tips on best practices for such one.
+
+The package-analyser CLI can be configured through several available options.
+
+## Reference
+
+- [package-analyser documentation](https://github.com/raphaelstolt/package-analyser/blob/main/README.md)
