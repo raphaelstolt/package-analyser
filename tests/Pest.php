@@ -16,6 +16,9 @@ use Illuminate\Filesystem\Filesystem;
 uses(Tests\TestCase::class)->beforeEach(function () {
     $this->temporaryDirectory = setUpTemporaryDirectory();
     exec('cd '.$this->temporaryDirectory.' && git init 2>&1');
+    if (file_exists($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.pa.yml')) {
+        unlink($this->temporaryDirectory.DIRECTORY_SEPARATOR.'.pa.yml');
+    }
 })->afterEach(function () {
     $filesystem = new Filesystem;
     $filesystem->deleteDirectory($this->temporaryDirectory);

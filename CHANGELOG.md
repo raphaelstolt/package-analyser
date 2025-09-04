@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- Add an analyse step for checking if a llms.txt exists in the package. Closes [#5](https://github.com/raphaelstolt/package-analyser/issues/5).
+
 ## [v1.5.1] - 2025-03-12
 ### Added
 

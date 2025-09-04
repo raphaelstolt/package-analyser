@@ -15,7 +15,7 @@ it('fails on non existent package directory', function () {
 });
 
 it('prints number of analysis steps', function () {
-    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Ran 21 analysis steps');
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Ran 22 analysis steps');
 });
 
 it('has success emoji for successful analyse step', function () {
@@ -76,7 +76,6 @@ YAML;
 
     \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
 
-    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
     $this->artisan('analyse '.$this->temporaryDirectory.' --configuration=.pa.yml')->expectsOutputToContain('Using configuration');
 
     \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
@@ -86,15 +85,14 @@ it('analyses successfully with omitted steps', function () {
     setUpCompletePackage($this->temporaryDirectory);
     rmdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
 
-    $yamlContent = <<<'YAML'
+    $yamlContent = <<<YAML
 stepsToOmit:
     - cli-binary
 YAML;
 
     \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
 
-    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
-    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain('Omitted 1 analyse step');
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS)->expectsOutputToContain('Omitted 1 analyse step');
 
     \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
 });
@@ -104,6 +102,7 @@ function setUpCompletePackage(string $temporaryDirectory): void
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitattributes');
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitlab-ci.yml');
+    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'llms.txt');
 
     \exec('cd '.$temporaryDirectory.' && git config user.email "raphael.stolt@gmail.com" && git config user.name "Raphael Stolt" 2>&1');
     \exec('cd '.$temporaryDirectory.' && touch foo.txt && git add foo.txt && git commit -m "Foo" && git tag v1.0.0 2>&1');

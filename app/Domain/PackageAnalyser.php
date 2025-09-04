@@ -50,6 +50,7 @@ class PackageAnalyser
             ['id' => 'peck', 'summary' => 'Utilise Peck for detecting spelling mistakes.', 'status' => ViolationStatus::False],
             ['id' => 'rector', 'summary' => 'Utilise Rector to continuously refactor your code.', 'status' => ViolationStatus::False],
             ['id' => 'composer-outdated', 'summary' => 'Update your direct Composer dependencies.', 'status' => ViolationStatus::False],
+            ['id' => 'llms-missing', 'summary' => 'Add a llms.txt file to your package.', 'status' => ViolationStatus::Irrelevant],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -147,6 +148,8 @@ class PackageAnalyser
                 case 'eol-php':
                     $this->alternateStepStatus('eol-php', $this->checkComposerPHPVersion(), $stepsToOmit);
                     break;
+                case 'llms-missing':
+                    $this->alternateStepStatus('llms-missing', $this->checkLlmsTxtExistence(), $stepsToOmit);
             }
         }
 
@@ -362,6 +365,23 @@ class PackageAnalyser
         $finder->ignoreVCS(false);
 
         if ($finder->depth(0)->path('vendor/bin')->in($this->directoryToAnalyse)->contains('peck')) {
+            return ViolationStatus::True;
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function checkLlmsTxtExistence(): ViolationStatus
+    {
+        $finder = new Finder;
+        $finder->ignoreDotFiles(false);
+        $finder->ignoreVCS(false);
+
+        if ($finder->depth(0)->path('llms.txt')->in($this->directoryToAnalyse)->hasResults()) {
+            if (str_contains(file_get_contents($this->directoryToAnalyse.DIRECTORY_SEPARATOR.'.gitattributes'), 'llms.txt')) {
+                return ViolationStatus::False;
+            }
+
             return ViolationStatus::True;
         }
 
