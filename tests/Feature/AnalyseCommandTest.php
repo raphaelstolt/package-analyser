@@ -85,7 +85,7 @@ it('analyses successfully with omitted steps', function () {
     setUpCompletePackage($this->temporaryDirectory);
     rmdir($this->temporaryDirectory.DIRECTORY_SEPARATOR.'bin');
 
-    $yamlContent = <<<YAML
+    $yamlContent = <<<'YAML'
 stepsToOmit:
     - cli-binary
 YAML;
