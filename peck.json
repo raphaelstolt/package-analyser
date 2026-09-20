@@ -12,7 +12,8 @@
             "vcs",
             "phar",
             "tui",
-            "analysed"
+            "analysed",
+            "normalise"
         ],
         "paths": []
     }

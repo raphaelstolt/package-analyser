@@ -97,6 +97,46 @@ YAML;
     \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
 });
 
+it('fails on a CHANGELOG.md without an entry for the latest version', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    \exec('cd '.$this->temporaryDirectory.' && git tag v2.0.0 2>&1');
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->expectsOutputToContain(
+        'Found 1 optimiseable aspect.'
+    )->assertExitCode(Command::FAILURE);
+});
+
+it('succeeds on a CHANGELOG.md with an entry for the latest version', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    \exec('cd '.$this->temporaryDirectory.' && git tag v2.0.0 2>&1');
+    setUpChangelog($this->temporaryDirectory, '2.0.0');
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+});
+
+it('fails on a missing CHANGELOG.md for a tagged package', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    \unlink($this->temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::FAILURE);
+});
+
+it('omits the latest version CHANGELOG.md step when configured', function () {
+    setUpCompletePackage($this->temporaryDirectory);
+    \exec('cd '.$this->temporaryDirectory.' && git tag v2.0.0 2>&1');
+
+    $yamlContent = <<<'YAML'
+stepsToOmit:
+    - changelog-latest-version
+YAML;
+
+    \file_put_contents(getcwd().DIRECTORY_SEPARATOR.'.pa.yml', $yamlContent);
+
+    $this->artisan('analyse '.$this->temporaryDirectory)->assertExitCode(Command::SUCCESS);
+
+    \unlink(getcwd().DIRECTORY_SEPARATOR.'.pa.yml');
+});
+
 function setUpCompletePackage(string $temporaryDirectory): void
 {
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'.gitignore');
@@ -126,7 +166,24 @@ function setUpCompletePackage(string $temporaryDirectory): void
         \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pest');
     }
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'box.json');
-    \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md');
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'README.md');
     \touch($temporaryDirectory.DIRECTORY_SEPARATOR.'LICENSE.md');
+
+    setUpChangelog($temporaryDirectory, '1.0.0');
+}
+
+function setUpChangelog(string $temporaryDirectory, string $version): void
+{
+    $changelogContent = <<<MARKDOWN
+    # Change Log
+
+    ## [Unreleased]
+
+    ## [v{$version}] - 2024-11-21
+    ### Added
+
+    - Add an initial feature.
+    MARKDOWN;
+
+    \file_put_contents($temporaryDirectory.DIRECTORY_SEPARATOR.'CHANGELOG.md', $changelogContent);
 }

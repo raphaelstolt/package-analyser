@@ -51,6 +51,7 @@ class PackageAnalyser
             ['id' => 'rector', 'summary' => 'Utilise Rector to continuously refactor your code.', 'status' => ViolationStatus::False],
             ['id' => 'composer-outdated', 'summary' => 'Update your direct Composer dependencies.', 'status' => ViolationStatus::False],
             ['id' => 'llms-missing', 'summary' => 'Add a llms.txt file to your package.', 'status' => ViolationStatus::Irrelevant],
+            ['id' => 'changelog-latest-version', 'summary' => 'Document the latest released version in the CHANGELOG.md of the package.', 'status' => ViolationStatus::False],
         ];
 
         $this->stepIds = Arr::pluck($this->steps, 'id');
@@ -90,6 +91,9 @@ class PackageAnalyser
                     break;
                 case 'changelog':
                     $this->alternateStepStatus('changelog', $this->checkChangelogExistence(), $stepsToOmit);
+                    break;
+                case 'changelog-latest-version':
+                    $this->alternateStepStatus('changelog-latest-version', $this->checkChangelogLatestVersionEntry(), $stepsToOmit);
                     break;
                 case 'tests':
                     $this->alternateStepStatus('tests', ViolationStatus::True, $stepsToOmit);
@@ -191,6 +195,45 @@ class PackageAnalyser
         }
 
         return ViolationStatus::False;
+    }
+
+    private function checkChangelogLatestVersionEntry(): ViolationStatus
+    {
+        if ($this->checkVcsExistence() === ViolationStatus::False) {
+            return ViolationStatus::Irrelevant;
+        }
+
+        exec('cd '.realpath($this->getDirectoryToAnalyse()).' && git tag --list --sort=-v:refname 2>&1', $tags);
+
+        $tags = array_values(array_filter($tags, fn ($tag) => trim($tag) !== ''));
+
+        if (count($tags) === 0) {
+            return ViolationStatus::Irrelevant;
+        }
+
+        $finder = new Finder;
+        $changelogs = $finder->depth(0)->files()->name('CHANGELOG*')->in($this->directoryToAnalyse);
+
+        if ($changelogs->hasResults() === false) {
+            return ViolationStatus::False;
+        }
+
+        $latestVersion = $this->normaliseVersionNumber($tags[0]);
+
+        foreach ($changelogs as $changelog) {
+            $versionEntryPattern = '/^#{1,3}\s+.*'.preg_quote($latestVersion, '/').'(?![\d.])/m';
+
+            if (preg_match($versionEntryPattern, $changelog->getContents())) {
+                return ViolationStatus::True;
+            }
+        }
+
+        return ViolationStatus::False;
+    }
+
+    private function normaliseVersionNumber(string $tag): string
+    {
+        return str_replace(['v', 'rc-', 'rc', 'V', 'RC-', 'RC'], '', trim($tag));
     }
 
     private function checkReadmeExistence(): ViolationStatus
@@ -319,7 +362,7 @@ class PackageAnalyser
 
         $usesSemanticVersioning = false;
         foreach ($tags as $tag) {
-            $tag = str_replace(['v', 'rc-', 'rc', 'V', 'RC-', 'RC'], '', $tag);
+            $tag = $this->normaliseVersionNumber($tag);
             if (preg_match('/^(\d+\.)?(\d+\.)?(\*|\d+)$/', $tag)) {
                 $usesSemanticVersioning = true;
             }
